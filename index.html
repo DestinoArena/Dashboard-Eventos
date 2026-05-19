@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — Hector Couto · Only by Destino Arena</title>
+<title id="page-title">Dashboard — Hector Couto · Only by Destino Arena</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -274,7 +274,7 @@
   <div class="header-left">
     <div class="logo-dot"></div>
     <div>
-      <div class="header-title">Hector Couto — Only by Destino Arena</div>
+      <div class="header-title" id="header-title">Hector Couto — Only by Destino Arena</div>
       <div class="header-sub">Dashboard de ventas en tiempo real</div>
     </div>
   </div>
@@ -369,33 +369,66 @@
 </footer>
 
 <script>
-const API_KEY = 'AIzaSyAuJlNbip2fWReTMHqhOcuuJcN2V32YsA0';
-const SHEET_ID = '1Ln-Ie-JmfV-Saq1tvjB0mlAjdjfcVXUGSnJOIPh5FOE';
-const REFRESH_MS = 60000;
+// ═══════════════════════════════════════════════════════════
+// CONFIGURACIÓN DEL EVENTO — editá solo esta sección
+// ═══════════════════════════════════════════════════════════
 
-const COLORS = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4'];
+const CONFIG = {
 
-const TICKET_PRICES = {
-  0: 'Acceso S/Cargo',
-  15000: 'Early Pass',
-  20000: 'Early Bird General',
-  25000: 'General Tanda 1',
-  30000: 'General Tanda 2',
-  35000: 'General Tanda 3',
-  40000: 'VIP Front - Tanda 1',
-  60000: 'Backstage - Tanda 1'
+  // Nombre del artista o evento (aparece en el header)
+  ARTISTA: 'Hector Couto',
+
+  // Nombre de la productora o venue
+  VENUE: 'Only by Destino Arena',
+
+  // API Key de Google Sheets
+  API_KEY: 'AIzaSyAuJlNbip2fWReTMHqhOcuuJcN2V32YsA0',
+
+  // ID del Google Sheets (parte larga de la URL)
+  SHEET_ID: '1Ln-Ie-JmfV-Saq1tvjB0mlAjdjfcVXUGSnJOIPh5FOE',
+
+  // Cada cuántos segundos se actualiza el dashboard
+  REFRESH_SEG: 60,
+
+  // Tipos de ticket: precio en pesos → nombre visible en el dashboard
+  // Para un nuevo evento: reemplazá los precios y nombres según corresponda
+  TICKET_PRICES: {
+    0:     'Acceso S/Cargo',
+    15000: 'Early Pass',
+    20000: 'Early Bird General',
+    25000: 'General Tanda 1',
+    30000: 'General Tanda 2',
+    35000: 'General Tanda 3',
+    40000: 'VIP Front - Tanda 1',
+    60000: 'Backstage - Tanda 1',
+  },
+
+  // Columnas de la hoja "Ventas Diarias" por tipo de ticket
+  // col = posición de la columna (D=3, E=4, F=5, G=6, H=7, I=8, J=9...)
+  // nombre = como se muestra en el dashboard
+  // key = nombre EXACTO en mayúsculas del Dataset Tipos De Tickets
+  // precio = precio unitario en pesos
+  COL_TICKETS: [
+    { col: 3, nombre: 'Backstage - Tanda 1',  key: 'BACKSTAGE - TANDA 1',        precio: 60000 },
+    { col: 4, nombre: 'VIP Front - Tanda 1',  key: 'VIP FRONT - TANDA 1',         precio: 40000 },
+    { col: 5, nombre: 'Early Pass',            key: 'EARLY PASS (HASTA 01:00 HS)', precio: 15000 },
+    { col: 6, nombre: 'Early Bird General',    key: 'EARLY BIRD GENERAL',          precio: 20000 },
+    { col: 7, nombre: 'General Tanda 1',       key: 'GENERAL TANDA 1',             precio: 25000 },
+    { col: 8, nombre: 'General Tanda 2',       key: 'GENERAL TANDA 2',             precio: 30000 },
+    { col: 9, nombre: 'General Tanda 3',       key: 'GENERAL TANDA 3',             precio: 35000 },
+  ],
 };
 
-const TICKET_MAX = {
-  'Acceso S/Cargo': 50,
-  'Early Pass': 500,
-  'Early Bird General': 6,
-  'General Tanda 1': 500,
-  'General Tanda 2': 500,
-  'General Tanda 3': 500,
-  'VIP Front - Tanda 1': 500,
-  'Backstage - Tanda 1': 500
-};
+// ═══════════════════════════════════════════════════════════
+// NO MODIFICAR A PARTIR DE AQUÍ
+// ═══════════════════════════════════════════════════════════
+
+const API_KEY       = CONFIG.API_KEY;
+const SHEET_ID      = CONFIG.SHEET_ID;
+const REFRESH_MS    = CONFIG.REFRESH_SEG * 1000;
+const TICKET_PRICES = CONFIG.TICKET_PRICES;
+const COLORS        = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4'];
+const TICKET_MAX    = {};
 
 let chartDona, chartBarras, chartLinea, chartHora;
 
@@ -439,15 +472,7 @@ function buildDashboard(ventas, diarias, tipos, totales) {
     tipoMaxMap[nombre] = max || 999;
   });
 
-  const COL_TIPOS = [
-    { col: 3, nombre: 'Backstage - Tanda 1', key: 'BACKSTAGE - TANDA 1', precio: 60000 },
-    { col: 4, nombre: 'VIP Front - Tanda 1', key: 'VIP FRONT - TANDA 1', precio: 40000 },
-    { col: 5, nombre: 'Early Pass', key: 'EARLY PASS (HASTA 01:00 HS)', precio: 15000 },
-    { col: 6, nombre: 'Early Bird General', key: 'EARLY BIRD GENERAL', precio: 20000 },
-    { col: 7, nombre: 'General Tanda 1', key: 'GENERAL TANDA 1', precio: 25000 },
-    { col: 8, nombre: 'General Tanda 2', key: 'GENERAL TANDA 2', precio: 30000 },
-    { col: 9, nombre: 'General Tanda 3', key: 'GENERAL TANDA 3', precio: 35000 },
-  ];
+  const COL_TIPOS = CONFIG.COL_TICKETS;
 
   const tipoMap = {};
   COL_TIPOS.forEach(ct => {
@@ -606,10 +631,9 @@ function buildDashboard(ventas, diarias, tipos, totales) {
 
   diarias.forEach(row => {
     const fechaRaw = row[0];
-    const totalDia = parseFloat(row[1]) || 0;
-    if (!fechaRaw || totalDia === 0) return;
+    if (!fechaRaw) return;
 
-    // Parse date - can be serial number or date string
+    // Parse date - include ALL dates, even with 0 sales
     let fechaStr = '';
     const num = parseFloat(fechaRaw);
     if (!isNaN(num) && num > 40000) {
@@ -618,13 +642,12 @@ function buildDashboard(ventas, diarias, tipos, totales) {
     } else {
       const d = new Date(fechaRaw);
       if (!isNaN(d)) fechaStr = d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
-      else fechaStr = String(fechaRaw).substring(0, 10);
+      else fechaStr = String(fechaRaw).substring(0, 5);
     }
 
-    cumTickets += totalDia;
+    const totalDia = parseFloat(row[1]) || 0;
     dailyLabels.push(fechaStr);
     dailyPerDay.push(totalDia);
-    dailyCumulative.push(cumTickets);
   });
 
   if (chartLinea) chartLinea.destroy();
@@ -728,6 +751,10 @@ async function loadData() {
     console.error(err);
   }
 }
+
+// Actualizar título y header con config
+document.getElementById('header-title').textContent = CONFIG.ARTISTA + ' — ' + CONFIG.VENUE;
+document.getElementById('page-title').textContent = 'Dashboard — ' + CONFIG.ARTISTA + ' · ' + CONFIG.VENUE;
 
 loadData();
 setInterval(loadData, REFRESH_MS);
