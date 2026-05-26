@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -24,247 +25,90 @@
     --amber: #ffb84d;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    min-height: 100vh;
-  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-height: 100vh; }
 
-  /* Header */
   header {
     border-bottom: 1px solid var(--border);
     padding: 20px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0;
     background: rgba(10,10,10,0.95);
-    backdrop-filter: blur(12px);
-    z-index: 100;
+    backdrop-filter: blur(12px); z-index: 100;
   }
   .header-left { display: flex; align-items: center; gap: 16px; }
-  .logo-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--accent); }
-    50% { opacity: 0.5; box-shadow: 0 0 4px var(--accent); }
-  }
+  .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 8px var(--accent)} 50%{opacity:.5;box-shadow:0 0 4px var(--accent)} }
   .header-title { font-size: 15px; font-weight: 500; letter-spacing: -0.2px; }
   .header-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
-  .live-badge {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--accent-dim);
-    border: 1px solid rgba(200,241,53,0.2);
-    color: var(--accent);
-    font-size: 11px;
-    font-family: 'DM Mono', monospace;
-    padding: 5px 12px;
-    border-radius: 20px;
-    letter-spacing: 0.5px;
-  }
-  .live-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 1.5s infinite;
-  }
-  .last-update {
-    font-size: 11px;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-  }
+  .live-badge { display:flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(200,241,53,0.2);color:var(--accent);font-size:11px;font-family:'DM Mono',monospace;padding:5px 12px;border-radius:20px;letter-spacing:.5px; }
+  .live-dot { width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite; }
+  .last-update { font-size:11px;color:var(--text3);font-family:'DM Mono',monospace; }
 
-  /* Layout */
   main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
 
-  /* Loading / error */
-  #loading {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    height: 60vh; gap: 16px;
-    color: var(--text2);
-  }
-  .spinner {
-    width: 32px; height: 32px;
-    border: 2px solid var(--border2);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  #error-msg {
-    display: none;
-    background: rgba(255,77,77,0.08);
-    border: 1px solid rgba(255,77,77,0.2);
-    color: var(--red);
-    padding: 16px 20px;
-    border-radius: 8px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    margin-bottom: 24px;
-  }
-  #dashboard { display: none; }
+  #loading { display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:16px;color:var(--text2); }
+  .spinner { width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  #error-msg { display:none;background:rgba(255,77,77,0.08);border:1px solid rgba(255,77,77,0.2);color:var(--red);padding:16px 20px;border-radius:8px;font-family:'DM Mono',monospace;font-size:12px;margin-bottom:24px; }
+  #dashboard { display:none; }
 
-  /* KPI grid */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .kpi {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    transition: border-color 0.2s;
-  }
-  .kpi:hover { border-color: var(--border2); }
-  .kpi.accent { border-color: rgba(200,241,53,0.2); background: var(--accent-dim); }
-  .kpi-label {
-    font-size: 11px;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin-bottom: 10px;
-  }
-  .kpi-value {
-    font-size: 26px;
-    font-weight: 600;
-    letter-spacing: -1px;
-    color: var(--text);
-    line-height: 1;
-  }
-  .kpi.accent .kpi-value { color: var(--accent); }
-  .kpi-sub {
-    font-size: 11px;
-    color: var(--text3);
-    margin-top: 6px;
-    font-family: 'DM Mono', monospace;
-  }
+  .kpi-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px; }
+  .kpi { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;transition:border-color .2s; }
+  .kpi:hover { border-color:var(--border2); }
+  .kpi.accent { border-color:rgba(200,241,53,0.2);background:var(--accent-dim); }
+  .kpi-label { font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px; }
+  .kpi-value { font-size:26px;font-weight:600;letter-spacing:-1px;color:var(--text);line-height:1; }
+  .kpi.accent .kpi-value { color:var(--accent); }
+  .kpi-sub { font-size:11px;color:var(--text3);margin-top:6px;font-family:'DM Mono',monospace; }
 
-  /* Charts grid */
-  .charts-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
-  .chart-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-  }
-  .chart-card.wide { grid-column: span 2; }
-  .chart-card.full { grid-column: 1 / -1; }
-  .card-title {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text2);
-    margin-bottom: 16px;
-  }
-  .chart-wrap { position: relative; width: 100%; }
+  .charts-row { display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px; }
+  .chart-card { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px; }
+  .chart-card.wide { grid-column:span 2; }
+  .card-title { font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:16px; }
+  .chart-wrap { position:relative;width:100%; }
 
-  /* Legend */
-  .legend {
-    display: flex; flex-wrap: wrap; gap: 10px;
-    margin-bottom: 12px;
-  }
-  .legend-item {
-    display: flex; align-items: center; gap: 5px;
-    font-size: 11px; color: var(--text2);
-  }
-  .legend-dot {
-    width: 8px; height: 8px;
-    border-radius: 2px; flex-shrink: 0;
-  }
+  .legend { display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px; }
+  .legend-item { display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2); }
+  .legend-dot { width:8px;height:8px;border-radius:2px;flex-shrink:0; }
 
-  /* Table */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; }
-  thead th {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text3);
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--border);
-    text-align: left;
-    font-weight: 400;
-  }
-  tbody td {
-    padding: 12px 12px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    font-size: 13px;
-  }
-  tbody tr:last-child td { border-bottom: none; }
-  tbody tr:hover td { background: rgba(255,255,255,0.02); }
-  .total-row td {
-    font-weight: 600;
-    color: var(--accent);
-    border-top: 1px solid var(--border2);
-    border-bottom: none;
-  }
-  .badge {
-    display: inline-block;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 20px;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.3px;
-  }
-  .badge-green { background: rgba(200,241,53,0.1); color: var(--accent); border: 1px solid rgba(200,241,53,0.2); }
-  .badge-red { background: rgba(255,77,77,0.1); color: var(--red); border: 1px solid rgba(255,77,77,0.2); }
-  .badge-blue { background: rgba(77,159,255,0.1); color: var(--blue); border: 1px solid rgba(77,159,255,0.2); }
-  .badge-amber { background: rgba(255,184,77,0.1); color: var(--amber); border: 1px solid rgba(255,184,77,0.2); }
+  .table-wrap { overflow-x:auto; }
+  table { width:100%;border-collapse:collapse; }
+  thead th { font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:400; }
+  tbody td { padding:12px 12px;border-bottom:1px solid var(--border);color:var(--text);font-size:13px; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover td { background:rgba(255,255,255,0.02); }
+  .total-row td { font-weight:600;color:var(--accent);border-top:1px solid var(--border2);border-bottom:none; }
 
-  /* Progress bar */
-  .progress-wrap { margin-top: 6px; }
-  .progress-bar-bg {
-    background: var(--bg3);
-    border-radius: 4px;
-    height: 4px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%; border-radius: 4px;
-    background: var(--accent);
-    transition: width 0.8s ease;
-  }
-  .progress-label {
-    display: flex; justify-content: space-between;
-    font-size: 10px; color: var(--text3);
-    margin-bottom: 4px;
-    font-family: 'DM Mono', monospace;
-  }
+  .badge { display:inline-block;font-size:10px;padding:3px 8px;border-radius:20px;font-family:'DM Mono',monospace;letter-spacing:.3px; }
+  .badge-green { background:rgba(200,241,53,0.1);color:var(--accent);border:1px solid rgba(200,241,53,0.2); }
+  .badge-red { background:rgba(255,77,77,0.1);color:var(--red);border:1px solid rgba(255,77,77,0.2); }
+  .badge-blue { background:rgba(77,159,255,0.1);color:var(--blue);border:1px solid rgba(77,159,255,0.2); }
+  .badge-amber { background:rgba(255,184,77,0.1);color:var(--amber);border:1px solid rgba(255,184,77,0.2); }
 
-  /* Footer */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 16px 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--text3);
-    font-size: 11px;
-    font-family: 'DM Mono', monospace;
-  }
+  .progress-wrap { margin-top:6px; }
+  .progress-bar-bg { background:var(--bg3);border-radius:4px;height:4px;overflow:hidden; }
+  .progress-bar-fill { height:100%;border-radius:4px;background:var(--accent);transition:width .8s ease; }
+  .progress-label { display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px;font-family:'DM Mono',monospace; }
 
-  @media (max-width: 900px) {
-    main { padding: 16px; }
-    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-    .charts-row { grid-template-columns: 1fr; }
-    .chart-card.wide, .chart-card.full { grid-column: span 1; }
-    header { padding: 16px; }
+  /* Geo section: 2 cols layout */
+  .geo-row { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px; }
+  .geo-lists { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+  .geo-list-item { display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px; }
+  .geo-list-item:last-child { border-bottom:none; }
+  .geo-list-rank { font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-right:10px;width:16px;flex-shrink:0; }
+  .geo-list-name { flex:1;color:var(--text); }
+  .geo-list-count { font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);margin-left:8px; }
+  .geo-list-bar { height:3px;background:var(--bg3);border-radius:2px;margin-top:3px; }
+  .geo-list-bar-fill { height:100%;border-radius:2px;background:var(--accent);opacity:.5; }
+
+  footer { border-top:1px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;color:var(--text3);font-size:11px;font-family:'DM Mono',monospace; }
+
+  @media(max-width:900px){
+    main{padding:16px}
+    .kpi-grid{grid-template-columns:repeat(2,1fr)}
+    .charts-row,.geo-row,.geo-lists{grid-template-columns:1fr}
+    .chart-card.wide{grid-column:span 1}
+    header{padding:16px}
   }
 </style>
 </head>
@@ -278,17 +122,14 @@
       <div class="header-sub">Dashboard de ventas en tiempo real</div>
     </div>
   </div>
-  <div style="display:flex; align-items:center; gap:16px;">
+  <div style="display:flex;align-items:center;gap:16px;">
     <span class="last-update" id="last-update">—</span>
     <span class="live-badge"><span class="live-dot"></span>EN VIVO</span>
   </div>
 </header>
 
 <main>
-  <div id="loading">
-    <div class="spinner"></div>
-    <span>Conectando con Google Sheets...</span>
-  </div>
+  <div id="loading"><div class="spinner"></div><span>Conectando con Google Sheets...</span></div>
   <div id="error-msg"></div>
   <div id="dashboard">
 
@@ -299,17 +140,15 @@
         <div class="card-title">Tickets vendidos por tipo</div>
         <div class="legend" id="legend-dona"></div>
         <div class="chart-wrap" style="height:200px;">
-          <canvas id="chartDona" role="img" aria-label="Distribución de tickets por tipo"></canvas>
+          <canvas id="chartDona"></canvas>
         </div>
       </div>
-
       <div class="chart-card">
         <div class="card-title">Recaudación por tipo ($)</div>
         <div class="chart-wrap" style="height:232px;">
-          <canvas id="chartBarras" role="img" aria-label="Recaudación por tipo de ticket"></canvas>
+          <canvas id="chartBarras"></canvas>
         </div>
       </div>
-
       <div class="chart-card">
         <div class="card-title">Ocupación por tipo</div>
         <div id="progress-section"></div>
@@ -319,7 +158,7 @@
     <div class="chart-card" style="margin-bottom:12px;">
       <div class="card-title">Progresión de ventas por fecha</div>
       <div class="chart-wrap" style="height:220px;">
-        <canvas id="chartLinea" role="img" aria-label="Progresión de tickets vendidos por fecha"></canvas>
+        <canvas id="chartLinea"></canvas>
       </div>
     </div>
 
@@ -327,36 +166,33 @@
       <div class="card-title">Detalle por tipo de ticket</div>
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>Tipo</th>
-              <th>Precio unitario</th>
-              <th>Vendidos</th>
-              <th>Cap. máx.</th>
-              <th>Recaudación</th>
-              <th>% del total</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Tipo</th><th>Precio unitario</th><th>Vendidos</th><th>Cap. máx.</th><th>Recaudación</th><th>% del total</th><th>Estado</th></tr></thead>
           <tbody id="tabla-body"></tbody>
         </table>
       </div>
     </div>
 
-    <div class="chart-card">
-      <div class="card-title">Últimas transacciones</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Comprador</th>
-              <th>Detalle</th>
-              <th>Total</th>
-              <th>Fecha y hora</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-recientes"></tbody>
-        </table>
+    <!-- SECCIÓN GEOGRÁFICA -->
+    <div class="geo-row">
+      <!-- Gráfico pastel localidades -->
+      <div class="chart-card">
+        <div class="card-title">Distribución por localidad</div>
+        <div class="legend" id="legend-geo"></div>
+        <div class="chart-wrap" style="height:240px;">
+          <canvas id="chartGeo"></canvas>
+        </div>
+      </div>
+
+      <!-- Las dos listas lado a lado -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="chart-card" style="flex:1;">
+          <div class="card-title">Tickets por localidad</div>
+          <div id="lista-localidades"></div>
+        </div>
+        <div class="chart-card" style="flex:1;">
+          <div class="card-title">Tickets por provincia</div>
+          <div id="lista-provincias"></div>
+        </div>
       </div>
     </div>
 
@@ -369,29 +205,12 @@
 </footer>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// CONFIGURACIÓN DEL EVENTO — editá solo esta sección
-// ═══════════════════════════════════════════════════════════
-
 const CONFIG = {
-
-  // Nombre del artista o evento (aparece en el header)
   ARTISTA: 'Hector Couto',
-
-  // Nombre de la productora o venue
   VENUE: 'Only by Destino Arena',
-
-  // API Key de Google Sheets
   API_KEY: 'AIzaSyAuJlNbip2fWReTMHqhOcuuJcN2V32YsA0',
-
-  // ID del Google Sheets (parte larga de la URL)
   SHEET_ID: '1Ln-Ie-JmfV-Saq1tvjB0mlAjdjfcVXUGSnJOIPh5FOE',
-
-  // Cada cuántos segundos se actualiza el dashboard
   REFRESH_SEG: 60,
-
-  // Tipos de ticket: precio en pesos → nombre visible en el dashboard
-  // Para un nuevo evento: reemplazá los precios y nombres según corresponda
   TICKET_PRICES: {
     0:     'Acceso S/Cargo',
     15000: 'Early Pass',
@@ -402,12 +221,6 @@ const CONFIG = {
     40000: 'VIP Front - Tanda 1',
     60000: 'Backstage - Tanda 1',
   },
-
-  // Columnas de la hoja "Ventas Diarias" por tipo de ticket
-  // col = posición de la columna (D=3, E=4, F=5, G=6, H=7, I=8, J=9...)
-  // nombre = como se muestra en el dashboard
-  // key = nombre EXACTO en mayúsculas del Dataset Tipos De Tickets
-  // precio = precio unitario en pesos
   COL_TICKETS: [
     { col: 3, nombre: 'Backstage - Tanda 1',  key: 'BACKSTAGE - TANDA 1',        precio: 60000 },
     { col: 4, nombre: 'VIP Front - Tanda 1',  key: 'VIP FRONT - TANDA 1',         precio: 40000 },
@@ -419,18 +232,14 @@ const CONFIG = {
   ],
 };
 
-// ═══════════════════════════════════════════════════════════
-// NO MODIFICAR A PARTIR DE AQUÍ
-// ═══════════════════════════════════════════════════════════
-
-const API_KEY       = CONFIG.API_KEY;
-const SHEET_ID      = CONFIG.SHEET_ID;
-const REFRESH_MS    = CONFIG.REFRESH_SEG * 1000;
+const API_KEY    = CONFIG.API_KEY;
+const SHEET_ID   = CONFIG.SHEET_ID;
+const REFRESH_MS = CONFIG.REFRESH_SEG * 1000;
 const TICKET_PRICES = CONFIG.TICKET_PRICES;
-const COLORS        = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4'];
-const TICKET_MAX    = {};
+const COLORS     = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4'];
+const GEO_COLORS = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4','#f135c8','#35c8f1','#f1c835','#c835f1'];
 
-let chartDona, chartBarras, chartLinea, chartHora;
+let chartDona, chartBarras, chartLinea, chartGeo;
 
 async function fetchSheet(range) {
   const parts = range.split('!');
@@ -443,316 +252,290 @@ async function fetchSheet(range) {
   return data.values || [];
 }
 
-function fmt(n) {
-  return '$' + Math.round(n).toLocaleString('es-AR');
-}
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-AR'); }
 
 function parseDate(raw) {
   if (!raw) return null;
   if (raw instanceof Date) return raw;
   const s = String(raw).trim();
   const num = parseFloat(s);
-  if (!isNaN(num) && num > 40000) {
-    const d = new Date((num - 25569) * 86400 * 1000);
-    return d;
-  }
+  if (!isNaN(num) && num > 40000) return new Date((num - 25569) * 86400 * 1000);
   const d = new Date(s);
   return isNaN(d) ? null : d;
 }
 
-function buildDashboard(ventas, diarias, tipos, totales) {
-  // Build tipoMap from Dataset Tipos De Tickets
-  // Sheet range B4:F13 → row = [nombre, valor, cantMax, vendidos, recaudado]
+// Mapeo código de área → localidad (replicamos la lógica del Sheets)
+function codigoAreaToLocalidad(tel) {
+  if (!tel) return 'Otro código';
+  const t = String(tel).replace(/^54/, '').replace(/^9/, '');
+  if (t.startsWith('11')) return 'Buenos Aires / CABA';
+  const p3 = t.substring(0, 3);
+  const map = {
+    '220':'Moreno / GBA Oeste','221':'La Plata','223':'Mar del Plata','224':'Quilmes',
+    '225':'Tandil','226':'Balcarce','228':'Pinamar','229':'Necochea','230':'Pilar',
+    '236':'Junín','237':'Moreno / GBA Oeste','247':'Pergamino','248':'San Nicolás',
+    '249':'Tandil','261':'Mendoza','262':'San Rafael','264':'San Juan','266':'San Luis',
+    '280':'Puerto Madryn','281':'Bahía Blanca Zona','291':'Bahía Blanca','293':'Coronel Suárez',
+    '294':'Bariloche','297':'Comodoro Rivadavia','298':'General Roca','299':'Neuquén',
+    '341':'Rosario','342':'Santa Fe','343':'Paraná','345':'Concordia','346':'Gualeguaychú',
+    '348':'GBA Norte / Tigre','349':'San Pedro BA','351':'Córdoba','353':'Villa María',
+    '355':'San Francisco Cba','356':'Alta Gracia','357':'La Rioja','358':'Río Cuarto',
+    '359':'Córdoba Zona','362':'Resistencia','370':'Formosa','374':'Posadas','376':'Posadas',
+    '379':'Corrientes','380':'La Rioja','381':'San Miguel de Tucumán','382':'Catamarca',
+    '385':'Santiago del Estero','387':'Salta','388':'San Salvador de Jujuy',
+  };
+  return map[p3] || 'Otro código';
+}
+
+function localidadToProvincia(loc) {
+  const map = {
+    'Buenos Aires / CABA': 'CABA',
+    'Mar del Plata':'Buenos Aires','La Plata':'Buenos Aires','Bahía Blanca':'Buenos Aires',
+    'Quilmes':'Buenos Aires','Moreno / GBA Oeste':'Buenos Aires','Pilar':'Buenos Aires',
+    'GBA Norte / Tigre':'Buenos Aires','Junín':'Buenos Aires','Necochea':'Buenos Aires',
+    'Balcarce':'Buenos Aires','Pinamar':'Buenos Aires','San Nicolás':'Buenos Aires',
+    'Pergamino':'Buenos Aires','Bahía Blanca Zona':'Buenos Aires','Coronel Suárez':'Buenos Aires',
+    'San Pedro BA':'Buenos Aires','Tandil':'Buenos Aires',
+    'Rosario':'Santa Fe','Santa Fe':'Santa Fe',
+    'Córdoba':'Córdoba','Río Cuarto':'Córdoba','Villa María':'Córdoba',
+    'Alta Gracia':'Córdoba','San Francisco Cba':'Córdoba','Córdoba Zona':'Córdoba',
+    'Mendoza':'Mendoza','San Rafael':'Mendoza',
+    'San Juan':'San Juan',
+    'San Luis':'San Luis',
+    'Salta':'Salta',
+    'San Salvador de Jujuy':'Jujuy',
+    'San Miguel de Tucumán':'Tucumán',
+    'Catamarca':'Catamarca',
+    'Santiago del Estero':'Santiago del Estero',
+    'La Rioja':'La Rioja',
+    'Posadas':'Misiones',
+    'Corrientes':'Corrientes',
+    'Resistencia':'Chaco',
+    'Formosa':'Formosa',
+    'Paraná':'Entre Ríos','Concordia':'Entre Ríos','Gualeguaychú':'Entre Ríos',
+    'Bariloche':'Río Negro','General Roca':'Río Negro',
+    'Neuquén':'Neuquén',
+    'Puerto Madryn':'Chubut','Comodoro Rivadavia':'Chubut',
+  };
+  return map[loc] || 'Otros';
+}
+
+function renderGeoLista(containerId, data, maxCount) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = data.map((item, i) => {
+    const pct = Math.round((item.count / maxCount) * 100);
+    return `
+      <div class="geo-list-item">
+        <span class="geo-list-rank">${i+1}</span>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="geo-list-name">${item.name}</span>
+            <span class="geo-list-count">${item.count}</span>
+          </div>
+          <div class="geo-list-bar"><div class="geo-list-bar-fill" style="width:${pct}%"></div></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function buildDashboard(ventas, diarias, tipos, totales, geoData) {
+  const parsePesos = v => parseFloat(String(v||'0').replace(/[$\.]/g,'').replace(',','.')) || 0;
+
+  // tipoMaxMap
   const tipoMaxMap = {};
-  const parsePesos = v => parseFloat(String(v || '0').replace(/[$\.]/g, '').replace(',', '.')) || 0;
   tipos.forEach(t => {
-    const nombre = String(t[0] || '').trim().toUpperCase();
+    const nombre = String(t[0]||'').trim().toUpperCase();
     const max = parsePesos(t[2]);
-    if (!nombre || nombre === 'TOTAL') return;
+    if (!nombre || nombre==='TOTAL') return;
     tipoMaxMap[nombre] = max || 999;
   });
 
   const COL_TIPOS = CONFIG.COL_TICKETS;
-
   const tipoMap = {};
   COL_TIPOS.forEach(ct => {
-    tipoMap[ct.nombre] = {
-      nombre: ct.nombre,
-      precio: ct.precio,
-      max: tipoMaxMap[ct.key] || tipoMaxMap[ct.key.trimEnd()] || 999,
-      vendidos: 0,
-      recaudacion: 0
-    };
+    tipoMap[ct.nombre] = { nombre:ct.nombre, precio:ct.precio, max:tipoMaxMap[ct.key]||999, vendidos:0, recaudacion:0 };
   });
 
-  // Sum B4:B59 for totalTix and C4:C59 for totalRec from Ventas Diarias
-  let totalTix = 0, totalRec = 0;
-  totales.forEach(row => {
-    totalTix += parseFloat(row[0]) || 0;
-    totalRec += parsePesos(row[1]);
-  });
+  let totalTix=0, totalRec=0;
+  totales.forEach(row => { totalTix += parseFloat(row[0])||0; totalRec += parsePesos(row[1]); });
 
-  // Build per-type counts from diarias
   diarias.forEach(row => {
-    const totalDia = parseFloat(row[1]) || 0;
-    if (totalDia === 0) return;
+    if ((parseFloat(row[1])||0) === 0) return;
     COL_TIPOS.forEach(ct => {
-      const qty = parseFloat(row[ct.col]) || 0;
-      if (qty === 0) return;
+      const qty = parseFloat(row[ct.col])||0;
+      if (qty===0) return;
       tipoMap[ct.nombre].vendidos += qty;
       tipoMap[ct.nombre].recaudacion += qty * ct.precio;
     });
   });
 
-  // Count transactions from Dataset Registro Ventas
+  // Transacciones
   let totalTrans = 0;
-  const ventasData = [];
   ventas.forEach(row => {
-    const comprador = row[0];
     const total = parseFloat(row[5]);
-    const detalle = row[4] || '';
-    const fechaRaw = row[6];
-    if (!comprador || isNaN(total) || total <= 0) return;
-    const qty = parseInt(detalle.match(/^(\d+)/)?.[1] || '1');
-    const precioUnit = Math.round(total / qty);
-    const tipo = TICKET_PRICES[precioUnit] || `$${precioUnit.toLocaleString()}`;
-    const fecha = parseDate(fechaRaw);
+    if (!row[0] || isNaN(total) || total<=0) return;
     totalTrans++;
-    ventasData.push({ comprador, detalle, total, fecha, qty, tipo });
   });
 
-  ventasData.sort((a, b) => (b.fecha || 0) - (a.fecha || 0));
-  const ticketPromedio = totalTix > 0 ? totalRec / totalTix : 0;
-
-  const masVendido = Object.values(tipoMap).filter(t => t.vendidos > 0).sort((a, b) => b.vendidos - a.vendidos)[0];
-
   // KPIs
-  const kpiGrid = document.getElementById('kpi-grid');
-  kpiGrid.innerHTML = `
-    <div class="kpi accent">
-      <div class="kpi-label">Recaudación total</div>
-      <div class="kpi-value">${fmt(totalRec)}</div>
-      <div class="kpi-sub">acumulado</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Tickets vendidos</div>
-      <div class="kpi-value">${totalTix}</div>
-      <div class="kpi-sub">unidades</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Transacciones</div>
-      <div class="kpi-value">${totalTrans}</div>
-      <div class="kpi-sub">órdenes</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Precio promedio</div>
-      <div class="kpi-value">${fmt(ticketPromedio)}</div>
-      <div class="kpi-sub">por ticket</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Más vendido</div>
-      <div class="kpi-value" style="font-size:16px; padding-top:4px;">${masVendido?.nombre || '—'}</div>
-      <div class="kpi-sub">${masVendido?.vendidos || 0} tickets</div>
-    </div>
+  const ticketPromedio = totalTix > 0 ? totalRec/totalTix : 0;
+  const masVendido = Object.values(tipoMap).filter(t=>t.vendidos>0).sort((a,b)=>b.vendidos-a.vendidos)[0];
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi accent"><div class="kpi-label">Recaudación total</div><div class="kpi-value">${fmt(totalRec)}</div><div class="kpi-sub">acumulado</div></div>
+    <div class="kpi"><div class="kpi-label">Tickets vendidos</div><div class="kpi-value">${totalTix}</div><div class="kpi-sub">unidades</div></div>
+    <div class="kpi"><div class="kpi-label">Transacciones</div><div class="kpi-value">${totalTrans}</div><div class="kpi-sub">órdenes</div></div>
+    <div class="kpi"><div class="kpi-label">Precio promedio</div><div class="kpi-value">${fmt(ticketPromedio)}</div><div class="kpi-sub">por ticket</div></div>
+    <div class="kpi"><div class="kpi-label">Más vendido</div><div class="kpi-value" style="font-size:16px;padding-top:4px;">${masVendido?.nombre||'—'}</div><div class="kpi-sub">${masVendido?.vendidos||0} tickets</div></div>
   `;
 
-  // Datos para gráficos
-  const tiposArr = Object.values(tipoMap).filter(t => t.vendidos > 0).sort((a, b) => b.vendidos - a.vendidos);
-  const labels = tiposArr.map(t => t.nombre);
-  const cantidades = tiposArr.map(t => t.vendidos);
-  const recaudaciones = tiposArr.map(t => t.recaudacion);
-  const colores = tiposArr.map((_, i) => COLORS[i % COLORS.length]);
+  // Charts tickets
+  const tiposArr = Object.values(tipoMap).filter(t=>t.vendidos>0).sort((a,b)=>b.vendidos-a.vendidos);
+  const labels = tiposArr.map(t=>t.nombre);
+  const cantidades = tiposArr.map(t=>t.vendidos);
+  const recaudaciones = tiposArr.map(t=>t.recaudacion);
+  const colores = tiposArr.map((_,i)=>COLORS[i%COLORS.length]);
 
-  // Leyenda dona
-  document.getElementById('legend-dona').innerHTML = tiposArr.map((t, i) =>
+  document.getElementById('legend-dona').innerHTML = tiposArr.map((t,i)=>
     `<span class="legend-item"><span class="legend-dot" style="background:${colores[i]}"></span>${t.nombre} (${t.vendidos})</span>`
   ).join('');
 
-  // Chart dona
   if (chartDona) chartDona.destroy();
   chartDona = new Chart(document.getElementById('chartDona'), {
-    type: 'doughnut',
-    data: {
-      labels,
-      datasets: [{ data: cantidades, backgroundColor: colores, borderWidth: 2, borderColor: '#111' }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false, cutout: '65%',
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} tickets` } }
-      }
-    }
+    type:'doughnut',
+    data:{ labels, datasets:[{data:cantidades, backgroundColor:colores, borderWidth:2, borderColor:'#111'}] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'65%',
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} tickets`}} } }
   });
 
-  // Chart barras
   if (chartBarras) chartBarras.destroy();
-  const shortLabels = labels.map(l => l.length > 12 ? l.substring(0, 11) + '…' : l);
   chartBarras = new Chart(document.getElementById('chartBarras'), {
-    type: 'bar',
-    data: {
-      labels: shortLabels,
-      datasets: [{ data: recaudaciones, backgroundColor: colores, borderRadius: 4, borderSkipped: false }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)}` } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: '#555', font: { size: 10 } } },
-        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 }, callback: v => '$' + (v / 1000) + 'k' } }
-      }
-    }
+    type:'bar',
+    data:{ labels:labels.map(l=>l.length>12?l.substring(0,11)+'…':l), datasets:[{data:recaudaciones,backgroundColor:colores,borderRadius:4,borderSkipped:false}] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)}`}}},
+      scales:{ x:{grid:{display:false},ticks:{color:'#555',font:{size:10}}}, y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#555',font:{size:10},callback:v=>'$'+(v/1000)+'k'}} } }
   });
 
-  // Progress bars ocupación
-  const progSection = document.getElementById('progress-section');
-  progSection.innerHTML = Object.values(tipoMap).filter(t => t.vendidos > 0).map(t => {
-    const pct = Math.min(100, Math.round((t.vendidos / t.max) * 100));
-    return `
-      <div style="margin-bottom:14px;">
-        <div class="progress-label">
-          <span>${t.nombre}</span>
-          <span>${t.vendidos}/${t.max}</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" style="width:${pct}%; background:${pct >= 90 ? '#ff4d4d' : pct >= 60 ? '#ffb84d' : '#c8f135'}"></div>
-        </div>
-      </div>
-    `;
+  // Progress
+  document.getElementById('progress-section').innerHTML = Object.values(tipoMap).filter(t=>t.vendidos>0).map(t=>{
+    const pct=Math.min(100,Math.round((t.vendidos/t.max)*100));
+    return `<div style="margin-bottom:14px;">
+      <div class="progress-label"><span>${t.nombre}</span><span>${t.vendidos}/${t.max}</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${pct>=90?'#ff4d4d':pct>=60?'#ffb84d':'#c8f135'}"></div></div>
+    </div>`;
   }).join('');
 
-  // Chart línea acumulada
-  // Chart progresion diaria desde Ventas Diarias
-  // diarias: col A=fecha, B=total tickets dia, D=Backstage, E=VIP, F=EarlyPass, G=EarlyBird, H=General1, I=General2, J=General3
-  const dailyLabels = [];
-  const dailyCumulative = [];
-  const dailyPerDay = [];
-  let cumTickets = 0;
-
-  diarias.forEach(row => {
-    const fechaRaw = row[0];
-    if (!fechaRaw) return;
-
-    // Parse date - include ALL dates, even with 0 sales
-    let fechaStr = '';
-    const num = parseFloat(fechaRaw);
-    if (!isNaN(num) && num > 40000) {
-      const d = new Date((num - 25569) * 86400 * 1000);
-      fechaStr = d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
-    } else {
-      const d = new Date(fechaRaw);
-      if (!isNaN(d)) fechaStr = d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
-      else fechaStr = String(fechaRaw).substring(0, 5);
-    }
-
-    const totalDia = parseFloat(row[1]) || 0;
+  // Chart linea
+  const dailyLabels=[], dailyPerDay=[];
+  diarias.forEach(row=>{
+    const fechaRaw=row[0]; if(!fechaRaw) return;
+    let fechaStr='';
+    const num=parseFloat(fechaRaw);
+    if(!isNaN(num)&&num>40000) fechaStr=new Date((num-25569)*86400*1000).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'});
+    else { const d=new Date(fechaRaw); fechaStr=isNaN(d)?String(fechaRaw).substring(0,5):d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}); }
     dailyLabels.push(fechaStr);
-    dailyPerDay.push(totalDia);
+    dailyPerDay.push(parseFloat(row[1])||0);
   });
 
   if (chartLinea) chartLinea.destroy();
   chartLinea = new Chart(document.getElementById('chartLinea'), {
-    type: 'bar',
-    data: {
-      labels: dailyLabels,
-      datasets: [{
-        label: 'Tickets vendidos',
-        data: dailyPerDay,
-        backgroundColor: '#c8f135',
-        borderRadius: 4,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ` ${ctx.raw} tickets` } }
-      },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: '#555', font: { size: 11 }, maxRotation: 45, autoSkip: false }, offset: true },
-        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 11 } }, min: 0, max: 500 }
-      }
-    }
+    type:'bar',
+    data:{ labels:dailyLabels, datasets:[{label:'Tickets vendidos',data:dailyPerDay,backgroundColor:'#c8f135',borderRadius:4,borderSkipped:false}] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw} tickets`}}},
+      scales:{ x:{grid:{display:false},ticks:{color:'#555',font:{size:11},maxRotation:45,autoSkip:false},offset:true}, y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#555',font:{size:11}},min:0,max:500} } }
   });
 
   // Tabla detalle
-  const tablaBody = document.getElementById('tabla-body');
-  tablaBody.innerHTML = tiposArr.map((t, i) => {
-    const pct = Math.round((t.recaudacion / totalRec) * 100);
-    const agotado = t.vendidos >= t.max;
-    const badge = agotado
-      ? '<span class="badge badge-red">Agotado</span>'
-      : t.precio === 0
-        ? '<span class="badge badge-blue">Gratuito</span>'
-        : '<span class="badge badge-green">Activo</span>';
+  document.getElementById('tabla-body').innerHTML = tiposArr.map((t,i)=>{
+    const pct=Math.round((t.recaudacion/totalRec)*100);
+    const agotado=t.vendidos>=t.max;
+    const badge=agotado?'<span class="badge badge-red">Agotado</span>':t.precio===0?'<span class="badge badge-blue">Gratuito</span>':'<span class="badge badge-green">Activo</span>';
     return `<tr>
       <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${colores[i]};margin-right:8px;"></span>${t.nombre}</td>
-      <td style="font-family:'DM Mono',monospace;">${t.precio === 0 ? 'Gratis' : fmt(t.precio)}</td>
+      <td style="font-family:'DM Mono',monospace;">${t.precio===0?'Gratis':fmt(t.precio)}</td>
       <td style="font-family:'DM Mono',monospace;">${t.vendidos}</td>
-      <td style="font-family:'DM Mono',monospace; color:#555;">${t.max}</td>
+      <td style="font-family:'DM Mono',monospace;color:#555;">${t.max}</td>
       <td style="font-family:'DM Mono',monospace;">${fmt(t.recaudacion)}</td>
-      <td style="font-family:'DM Mono',monospace; color:#888;">${pct}%</td>
+      <td style="font-family:'DM Mono',monospace;color:#888;">${pct}%</td>
       <td>${badge}</td>
     </tr>`;
-  }).join('') + `
-    <tr class="total-row">
-      <td>Total</td>
-      <td>—</td>
-      <td>${totalTix}</td>
-      <td>—</td>
-      <td>${fmt(totalRec)}</td>
-      <td>100%</td>
-      <td>—</td>
-    </tr>`;
+  }).join('') + `<tr class="total-row"><td>Total</td><td>—</td><td>${totalTix}</td><td>—</td><td>${fmt(totalRec)}</td><td>100%</td><td>—</td></tr>`;
 
-  // Tabla recientes
-  const tablaRec = document.getElementById('tabla-recientes');
-  tablaRec.innerHTML = ventasData.slice(0, 10).map(v => {
-    const fechaStr = v.fecha
-      ? v.fecha.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit' }) + ' ' +
-        v.fecha.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' })
-      : '—';
-    const detalleCorto = v.detalle?.replace('// Only by Destino Arena','').trim() || '—';
-    return `<tr>
-      <td>${v.comprador}</td>
-      <td style="color:#888; font-size:12px;">${detalleCorto}</td>
-      <td style="font-family:'DM Mono',monospace; color:var(--accent);">${fmt(v.total)}</td>
-      <td style="font-family:'DM Mono',monospace; color:#555; font-size:12px;">${fechaStr}</td>
-    </tr>`;
-  }).join('');
+  // ── SECCIÓN GEOGRÁFICA ──
+  // Conteo por localidad y provincia desde la hoja Registro Ventas - Telefono
+  // geoData: array de filas [col D = localidad, col G = provincia]
+  const localidadCount = {};
+  const provinciaCount = {};
 
-  // Footer
+  geoData.forEach(row => {
+    const localidad = (row[3] || '').trim();  // col D
+    const provincia = (row[6] || '').trim();  // col G
+    if (localidad && localidad !== 'Otro código') {
+      localidadCount[localidad] = (localidadCount[localidad] || 0) + 1;
+    }
+    if (provincia && provincia !== 'Otros') {
+      provinciaCount[provincia] = (provinciaCount[provincia] || 0) + 1;
+    }
+  });
+
+  const localidadesArr = Object.entries(localidadCount).map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count);
+  const provinciasArr  = Object.entries(provinciaCount).map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count);
+
+  const maxLoc  = localidadesArr[0]?.count || 1;
+  const maxProv = provinciasArr[0]?.count  || 1;
+
+  // Gráfico pastel localidades
+  const geoLabels = localidadesArr.map(l=>l.name);
+  const geoCounts = localidadesArr.map(l=>l.count);
+  const geoColores = localidadesArr.map((_,i)=>GEO_COLORS[i%GEO_COLORS.length]);
+
+  document.getElementById('legend-geo').innerHTML = localidadesArr.map((l,i)=>
+    `<span class="legend-item"><span class="legend-dot" style="background:${geoColores[i]}"></span>${l.name} (${l.count})</span>`
+  ).join('');
+
+  if (chartGeo) chartGeo.destroy();
+  chartGeo = new Chart(document.getElementById('chartGeo'), {
+    type:'pie',
+    data:{ labels:geoLabels, datasets:[{data:geoCounts, backgroundColor:geoColores, borderWidth:2, borderColor:'#111'}] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>{
+        const total=ctx.dataset.data.reduce((a,b)=>a+b,0);
+        const pct=Math.round((ctx.raw/total)*100);
+        return ` ${ctx.label}: ${ctx.raw} tickets (${pct}%)`;
+      }}} } }
+  });
+
+  // Listas
+  renderGeoLista('lista-localidades', localidadesArr, maxLoc);
+  renderGeoLista('lista-provincias',  provinciasArr,  maxProv);
+
+  // Footer y timestamp
   document.getElementById('footer-count').textContent = `${totalTrans} transacciones · ${totalTix} tickets · ${fmt(totalRec)}`;
-
-  // Timestamp
-  const now = new Date();
-  document.getElementById('last-update').textContent =
-    'Actualizado ' + now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById('last-update').textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 
 async function loadData() {
   try {
-    const [ventas, diarias, tipos, totales] = await Promise.all([
+    const [ventas, diarias, tipos, totales, geoData] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:H"),
       fetchSheet("Ventas Diarias!A4:N59"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
-      fetchSheet("Ventas Diarias!B4:C59")
+      fetchSheet("Ventas Diarias!B4:C59"),
+      fetchSheet("Registro Ventas - Telefono!A2:I"),
     ]);
-
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    buildDashboard(ventas, diarias, tipos, totales);
-  } catch (err) {
+    buildDashboard(ventas, diarias, tipos, totales, geoData);
+  } catch(err) {
     document.getElementById('loading').style.display = 'none';
     const errEl = document.getElementById('error-msg');
     errEl.style.display = 'block';
-    errEl.textContent = `Error al cargar datos: ${err.message}. Verificá que la API key sea válida y que el Sheets sea accesible.`;
+    errEl.textContent = `Error al cargar datos: ${err.message}`;
     console.error(err);
   }
 }
 
-// Actualizar título y header con config
 document.getElementById('header-title').textContent = CONFIG.ARTISTA + ' — ' + CONFIG.VENUE;
 document.getElementById('page-title').textContent = 'Dashboard — ' + CONFIG.ARTISTA + ' · ' + CONFIG.VENUE;
 
