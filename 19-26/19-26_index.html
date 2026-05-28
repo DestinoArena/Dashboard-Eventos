@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Dashboard — 19:26 · Only by Destino Arena</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #1a1a1a;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #f0f0f0;
+    --text2: #888;
+    --text3: #555;
+    --accent: #c8f135;
+    --accent2: #8fbb1e;
+    --accent-dim: rgba(200,241,53,0.08);
+    --red: #ff4d4d;
+    --blue: #4d9fff;
+    --amber: #ffb84d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-height: 100vh; }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(12px); z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 8px var(--accent)} 50%{opacity:.5;box-shadow:0 0 4px var(--accent)} }
+  .header-title { font-size: 15px; font-weight: 500; letter-spacing: -0.2px; }
+  .header-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .back-link { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; text-decoration: none; transition: color 0.2s; }
+  .back-link:hover { color: var(--accent); }
+  .live-badge { display:flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(200,241,53,0.2);color:var(--accent);font-size:11px;font-family:'DM Mono',monospace;padding:5px 12px;border-radius:20px;letter-spacing:.5px; }
+  .live-dot { width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite; }
+  .last-update { font-size:11px;color:var(--text3);font-family:'DM Mono',monospace; }
+
+  main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+
+  #loading { display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:16px;color:var(--text2); }
+  .spinner { width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  #error-msg { display:none;background:rgba(255,77,77,0.08);border:1px solid rgba(255,77,77,0.2);color:var(--red);padding:16px 20px;border-radius:8px;font-family:'DM Mono',monospace;font-size:12px;margin-bottom:24px; }
+  #dashboard { display:none; }
+
+  .kpi-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px; }
+  .kpi { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;transition:border-color .2s; }
+  .kpi:hover { border-color:var(--border2); }
+  .kpi.accent { border-color:rgba(200,241,53,0.2);background:var(--accent-dim); }
+  .kpi-label { font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px; }
+  .kpi-value { font-size:26px;font-weight:600;letter-spacing:-1px;color:var(--text);line-height:1; }
+  .kpi.accent .kpi-value { color:var(--accent); }
+  .kpi-sub { font-size:11px;color:var(--text3);margin-top:6px;font-family:'DM Mono',monospace; }
+
+  .charts-row { display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px; }
+  .chart-card { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px; }
+  .chart-card.wide { grid-column:span 2; }
+  .card-title { font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:16px; }
+  .chart-wrap { position:relative;width:100%; }
+
+  .legend { display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px; }
+  .legend-item { display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2); }
+  .legend-dot { width:8px;height:8px;border-radius:2px;flex-shrink:0; }
+
+  .table-wrap { overflow-x:auto; }
+  table { width:100%;border-collapse:collapse; }
+  thead th { font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:400; }
+  tbody td { padding:12px 12px;border-bottom:1px solid var(--border);color:var(--text);font-size:13px; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover td { background:rgba(255,255,255,0.02); }
+  .total-row td { font-weight:600;color:var(--accent);border-top:1px solid var(--border2);border-bottom:none; }
+
+  .badge { display:inline-block;font-size:10px;padding:3px 8px;border-radius:20px;font-family:'DM Mono',monospace;letter-spacing:.3px; }
+  .badge-green { background:rgba(200,241,53,0.1);color:var(--accent);border:1px solid rgba(200,241,53,0.2); }
+  .badge-red { background:rgba(255,77,77,0.1);color:var(--red);border:1px solid rgba(255,77,77,0.2); }
+  .badge-blue { background:rgba(77,159,255,0.1);color:var(--blue);border:1px solid rgba(77,159,255,0.2); }
+  .badge-amber { background:rgba(255,184,77,0.1);color:var(--amber);border:1px solid rgba(255,184,77,0.2); }
+
+  .progress-bar-bg { background:var(--bg3);border-radius:4px;height:4px;overflow:hidden; }
+  .progress-bar-fill { height:100%;border-radius:4px;background:var(--accent);transition:width .8s ease; }
+  .progress-label { display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px;font-family:'DM Mono',monospace; }
+
+  .geo-row { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px; }
+  .geo-list-item { display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px; }
+  .geo-list-item:last-child { border-bottom:none; }
+  .geo-list-rank { font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-right:10px;width:16px;flex-shrink:0; }
+  .geo-list-name { flex:1;color:var(--text); }
+  .geo-list-count { font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);margin-left:8px; }
+  .geo-list-bar { height:3px;background:var(--bg3);border-radius:2px;margin-top:3px; }
+  .geo-list-bar-fill { height:100%;border-radius:2px;background:var(--accent);opacity:.5; }
+
+  footer { border-top:1px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;color:var(--text3);font-size:11px;font-family:'DM Mono',monospace; }
+
+  @media(max-width:900px){
+    main{padding:16px}
+    .kpi-grid{grid-template-columns:repeat(2,1fr)}
+    .charts-row,.geo-row{grid-template-columns:1fr}
+    .chart-card.wide{grid-column:span 1}
+    header{padding:16px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-dot"></div>
+    <div>
+      <div class="header-title" id="header-title">19:26 — Only by Destino Arena</div>
+      <div class="header-sub">Dashboard de ventas en tiempo real</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <a class="back-link" href="../index.html">← Volver</a>
+    <span class="last-update" id="last-update">—</span>
+    <span class="live-badge"><span class="live-dot"></span>EN VIVO</span>
+  </div>
+</header>
+
+<main>
+  <div id="loading"><div class="spinner"></div><span>Conectando con Google Sheets...</span></div>
+  <div id="error-msg"></div>
+  <div id="dashboard">
+
+    <div class="kpi-grid" id="kpi-grid"></div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="card-title">Tickets vendidos por tipo</div>
+        <div class="legend" id="legend-dona"></div>
+        <div class="chart-wrap" style="height:200px;">
+          <canvas id="chartDona"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="card-title">Recaudación por tipo ($)</div>
+        <div class="chart-wrap" style="height:232px;">
+          <canvas id="chartBarras"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="card-title">Ocupación por tipo</div>
+        <div id="progress-section"></div>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:12px;">
+      <div class="card-title">Progresión de ventas por fecha</div>
+      <div class="chart-wrap" style="height:220px;">
+        <canvas id="chartLinea"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:12px;">
+      <div class="card-title">Detalle por tipo de ticket</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tipo</th><th>Precio unitario</th><th>Vendidos</th><th>Cap. máx.</th><th>Recaudación</th><th>% del total</th><th>Estado</th></tr></thead>
+          <tbody id="tabla-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="geo-row">
+      <div class="chart-card">
+        <div class="card-title">Distribución por localidad</div>
+        <div class="legend" id="legend-geo"></div>
+        <div class="chart-wrap" style="height:240px;">
+          <canvas id="chartGeo"></canvas>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="chart-card" style="flex:1;">
+          <div class="card-title">Tickets por localidad</div>
+          <div id="lista-localidades"></div>
+        </div>
+        <div class="chart-card" style="flex:1;">
+          <div class="card-title">Tickets por provincia</div>
+          <div id="lista-provincias"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <span>Destino Arena · Sistema de ventas</span>
+  <span id="footer-count">—</span>
+</footer>
+
+<script>
+const CONFIG = {
+  ARTISTA: '19:26',
+  VENUE: 'Only by Destino Arena',
+  API_KEY: 'AIzaSyAuJlNbip2fWReTMHqhOcuuJcN2V32YsA0',
+  SHEET_ID: '1lCUnolKNAawVGVJjg_nOLvn9npQZ5KNlVM9549hpooA',
+  REFRESH_SEG: 60,
+  TICKET_PRICES: {
+    0:     'Acceso S/Cargo',
+    15000: 'Early Pass',
+    20000: 'Early Bird General',
+    25000: 'General Tanda 1',
+    30000: 'General Tanda 2',
+    35000: 'General Tanda 3',
+    40000: 'VIP Front - Tanda 1',
+    60000: 'Backstage - Tanda 1',
+  },
+  COL_TICKETS: [
+    { col: 3, nombre: 'Backstage - Tanda 1',  key: 'BACKSTAGE - TANDA 1',        precio: 60000 },
+    { col: 4, nombre: 'VIP Front - Tanda 1',  key: 'VIP FRONT - TANDA 1',         precio: 40000 },
+    { col: 5, nombre: 'Early Pass',            key: 'EARLY PASS (HASTA 01:00 HS)', precio: 15000 },
+    { col: 6, nombre: 'Early Bird General',    key: 'EARLY BIRD GENERAL',          precio: 20000 },
+    { col: 7, nombre: 'General Tanda 1',       key: 'GENERAL TANDA 1',             precio: 25000 },
+    { col: 8, nombre: 'General Tanda 2',       key: 'GENERAL TANDA 2',             precio: 30000 },
+    { col: 9, nombre: 'General Tanda 3',       key: 'GENERAL TANDA 3',             precio: 35000 },
+  ],
+};
+
+const API_KEY    = CONFIG.API_KEY;
+const SHEET_ID   = CONFIG.SHEET_ID;
+const REFRESH_MS = CONFIG.REFRESH_SEG * 1000;
+const TICKET_PRICES = CONFIG.TICKET_PRICES;
+const COLORS     = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4'];
+const GEO_COLORS = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4','#f135c8','#35c8f1','#f1c835','#c835f1'];
+
+let chartDona, chartBarras, chartLinea, chartGeo;
+
+async function fetchSheet(range) {
+  const parts = range.split('!');
+  const sheetName = encodeURIComponent(parts[0]);
+  const cellRange = parts[1] || '';
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${sheetName}!${cellRange}?key=${API_KEY}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+  const data = await res.json();
+  return data.values || [];
+}
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-AR'); }
+
+function parseDate(raw) {
+  if (!raw) return null;
+  const s = String(raw).trim();
+  const num = parseFloat(s);
+  if (!isNaN(num) && num > 40000) return new Date((num - 25569) * 86400 * 1000);
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
+}
+
+function localidadToProvincia(loc) {
+  const map = {
+    'Buenos Aires / CABA':'CABA',
+    'Mar del Plata':'Buenos Aires','La Plata':'Buenos Aires','Bahía Blanca':'Buenos Aires',
+    'Quilmes':'Buenos Aires','Moreno / GBA Oeste':'Buenos Aires','Pilar':'Buenos Aires',
+    'GBA Norte / Tigre':'Buenos Aires','Junín':'Buenos Aires','Necochea':'Buenos Aires',
+    'Balcarce':'Buenos Aires','Pinamar':'Buenos Aires','San Nicolás':'Buenos Aires',
+    'Pergamino':'Buenos Aires','Bahía Blanca Zona':'Buenos Aires','Coronel Suárez':'Buenos Aires',
+    'San Pedro BA':'Buenos Aires','Tandil':'Buenos Aires',
+    'Rosario':'Santa Fe','Santa Fe':'Santa Fe',
+    'Córdoba':'Córdoba','Río Cuarto':'Córdoba','Villa María':'Córdoba',
+    'Alta Gracia':'Córdoba','San Francisco Cba':'Córdoba','Córdoba Zona':'Córdoba',
+    'Mendoza':'Mendoza','San Rafael':'Mendoza',
+    'San Juan':'San Juan','San Luis':'San Luis','Salta':'Salta',
+    'San Salvador de Jujuy':'Jujuy','San Miguel de Tucumán':'Tucumán',
+    'Catamarca':'Catamarca','Santiago del Estero':'Santiago del Estero',
+    'La Rioja':'La Rioja','Posadas':'Misiones','Corrientes':'Corrientes',
+    'Resistencia':'Chaco','Formosa':'Formosa',
+    'Paraná':'Entre Ríos','Concordia':'Entre Ríos','Gualeguaychú':'Entre Ríos',
+    'Bariloche':'Río Negro','General Roca':'Río Negro','Neuquén':'Neuquén',
+    'Puerto Madryn':'Chubut','Comodoro Rivadavia':'Chubut',
+  };
+  return map[loc] || 'Otros';
+}
+
+function renderGeoLista(containerId, data, maxCount) {
+  document.getElementById(containerId).innerHTML = data.map((item, i) => {
+    const pct = Math.round((item.count / maxCount) * 100);
+    return `<div class="geo-list-item">
+      <span class="geo-list-rank">${i+1}</span>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="geo-list-name">${item.name}</span>
+          <span class="geo-list-count">${item.count}</span>
+        </div>
+        <div class="geo-list-bar"><div class="geo-list-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildDashboard(ventas, diarias, tipos, totales, geoData) {
+  const parsePesos = v => parseFloat(String(v||'0').replace(/[$\.]/g,'').replace(',','.')) || 0;
+
+  const tipoMaxMap = {};
+  tipos.forEach(t => {
+    const nombre = String(t[0]||'').trim().toUpperCase();
+    const max = parsePesos(t[2]);
+    if (!nombre || nombre==='TOTAL') return;
+    tipoMaxMap[nombre] = max || 999;
+  });
+
+  const tipoMap = {};
+  CONFIG.COL_TICKETS.forEach(ct => {
+    tipoMap[ct.nombre] = { nombre:ct.nombre, precio:ct.precio, max:tipoMaxMap[ct.key]||999, vendidos:0, recaudacion:0 };
+  });
+
+  let totalTix=0, totalRec=0;
+  totales.forEach(row => { totalTix += parseFloat(row[0])||0; totalRec += parsePesos(row[1]); });
+
+  diarias.forEach(row => {
+    if ((parseFloat(row[1])||0) === 0) return;
+    CONFIG.COL_TICKETS.forEach(ct => {
+      const qty = parseFloat(row[ct.col])||0;
+      if (!qty) return;
+      tipoMap[ct.nombre].vendidos += qty;
+      tipoMap[ct.nombre].recaudacion += qty * ct.precio;
+    });
+  });
+
+  let totalTrans = 0;
+  ventas.forEach(row => {
+    const total = parseFloat(row[5]);
+    if (!row[0] || isNaN(total) || total<=0) return;
+    totalTrans++;
+  });
+
+  const ticketPromedio = totalTix > 0 ? totalRec/totalTix : 0;
+  const masVendido = Object.values(tipoMap).filter(t=>t.vendidos>0).sort((a,b)=>b.vendidos-a.vendidos)[0];
+
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi accent"><div class="kpi-label">Recaudación total</div><div class="kpi-value">${fmt(totalRec)}</div><div class="kpi-sub">acumulado</div></div>
+    <div class="kpi"><div class="kpi-label">Tickets vendidos</div><div class="kpi-value">${totalTix}</div><div class="kpi-sub">unidades</div></div>
+    <div class="kpi"><div class="kpi-label">Transacciones</div><div class="kpi-value">${totalTrans}</div><div class="kpi-sub">órdenes</div></div>
+    <div class="kpi"><div class="kpi-label">Precio promedio</div><div class="kpi-value">${fmt(ticketPromedio)}</div><div class="kpi-sub">por ticket</div></div>
+    <div class="kpi"><div class="kpi-label">Más vendido</div><div class="kpi-value" style="font-size:16px;padding-top:4px;">${masVendido?.nombre||'—'}</div><div class="kpi-sub">${masVendido?.vendidos||0} tickets</div></div>
+  `;
+
+  const tiposArr = Object.values(tipoMap).filter(t=>t.vendidos>0).sort((a,b)=>b.vendidos-a.vendidos);
+  const labels = tiposArr.map(t=>t.nombre);
+  const cantidades = tiposArr.map(t=>t.vendidos);
+  const recaudaciones = tiposArr.map(t=>t.recaudacion);
+  const colores = tiposArr.map((_,i)=>COLORS[i%COLORS.length]);
+
+  document.getElementById('legend-dona').innerHTML = tiposArr.map((t,i)=>
+    `<span class="legend-item"><span class="legend-dot" style="background:${colores[i]}"></span>${t.nombre} (${t.vendidos})</span>`
+  ).join('');
+
+  if (chartDona) chartDona.destroy();
+  chartDona = new Chart(document.getElementById('chartDona'), {
+    type:'doughnut',
+    data:{ labels, datasets:[{data:cantidades,backgroundColor:colores,borderWidth:2,borderColor:'#111'}] },
+    options:{ responsive:true,maintainAspectRatio:false,cutout:'65%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} tickets`}}} }
+  });
+
+  if (chartBarras) chartBarras.destroy();
+  chartBarras = new Chart(document.getElementById('chartBarras'), {
+    type:'bar',
+    data:{ labels:labels.map(l=>l.length>12?l.substring(0,11)+'…':l), datasets:[{data:recaudaciones,backgroundColor:colores,borderRadius:4,borderSkipped:false}] },
+    options:{ responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)}`}}},
+      scales:{ x:{grid:{display:false},ticks:{color:'#555',font:{size:10}}}, y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#555',font:{size:10},callback:v=>'$'+(v/1000)+'k'}} } }
+  });
+
+  document.getElementById('progress-section').innerHTML = Object.values(tipoMap).filter(t=>t.vendidos>0).map(t=>{
+    const pct=Math.min(100,Math.round((t.vendidos/t.max)*100));
+    return `<div style="margin-bottom:14px;">
+      <div class="progress-label"><span>${t.nombre}</span><span>${t.vendidos}/${t.max}</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${pct>=90?'#ff4d4d':pct>=60?'#ffb84d':'#c8f135'}"></div></div>
+    </div>`;
+  }).join('');
+
+  const dailyLabels=[], dailyPerDay=[];
+  diarias.forEach(row=>{
+    if (!row[0]) return;
+    let fechaStr='';
+    const num=parseFloat(row[0]);
+    if (!isNaN(num)&&num>40000) fechaStr=new Date((num-25569)*86400*1000).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'});
+    else { const d=new Date(row[0]); fechaStr=isNaN(d)?String(row[0]).substring(0,5):d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}); }
+    dailyLabels.push(fechaStr);
+    dailyPerDay.push(parseFloat(row[1])||0);
+  });
+
+  if (chartLinea) chartLinea.destroy();
+  chartLinea = new Chart(document.getElementById('chartLinea'), {
+    type:'bar',
+    data:{ labels:dailyLabels, datasets:[{label:'Tickets vendidos',data:dailyPerDay,backgroundColor:'#c8f135',borderRadius:4,borderSkipped:false}] },
+    options:{ responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw} tickets`}}},
+      scales:{ x:{grid:{display:false},ticks:{color:'#555',font:{size:11},maxRotation:45,autoSkip:false},offset:true}, y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#555',font:{size:11}},min:0,max:500} } }
+  });
+
+  document.getElementById('tabla-body').innerHTML = tiposArr.map((t,i)=>{
+    const pct=Math.round((t.recaudacion/totalRec)*100);
+    const agotado=t.vendidos>=t.max;
+    const badge=agotado?'<span class="badge badge-red">Agotado</span>':t.precio===0?'<span class="badge badge-blue">Gratuito</span>':'<span class="badge badge-green">Activo</span>';
+    return `<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${colores[i]};margin-right:8px;"></span>${t.nombre}</td>
+      <td style="font-family:'DM Mono',monospace;">${t.precio===0?'Gratis':fmt(t.precio)}</td>
+      <td style="font-family:'DM Mono',monospace;">${t.vendidos}</td>
+      <td style="font-family:'DM Mono',monospace;color:#555;">${t.max}</td>
+      <td style="font-family:'DM Mono',monospace;">${fmt(t.recaudacion)}</td>
+      <td style="font-family:'DM Mono',monospace;color:#888;">${pct}%</td>
+      <td>${badge}</td>
+    </tr>`;
+  }).join('') + `<tr class="total-row"><td>Total</td><td>—</td><td>${totalTix}</td><td>—</td><td>${fmt(totalRec)}</td><td>100%</td><td>—</td></tr>`;
+
+  // Geo
+  const localidadCount = {}, provinciaCount = {};
+  geoData.forEach(row => {
+    const loc  = (row[3]||'').trim();
+    const prov = (row[6]||'').trim();
+    if (loc && loc !== 'Otro código') localidadCount[loc] = (localidadCount[loc]||0) + 1;
+    if (prov && prov !== 'Otros') provinciaCount[prov] = (provinciaCount[prov]||0) + 1;
+  });
+
+  const localidadesArr = Object.entries(localidadCount).map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count);
+  const provinciasArr  = Object.entries(provinciaCount).map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count);
+
+  document.getElementById('legend-geo').innerHTML = localidadesArr.map((l,i)=>
+    `<span class="legend-item"><span class="legend-dot" style="background:${GEO_COLORS[i%GEO_COLORS.length]}"></span>${l.name} (${l.count})</span>`
+  ).join('');
+
+  if (chartGeo) chartGeo.destroy();
+  chartGeo = new Chart(document.getElementById('chartGeo'), {
+    type:'pie',
+    data:{ labels:localidadesArr.map(l=>l.name), datasets:[{data:localidadesArr.map(l=>l.count),backgroundColor:localidadesArr.map((_,i)=>GEO_COLORS[i%GEO_COLORS.length]),borderWidth:2,borderColor:'#111'}] },
+    options:{ responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{
+        const total=ctx.dataset.data.reduce((a,b)=>a+b,0);
+        return ` ${ctx.label}: ${ctx.raw} tickets (${Math.round((ctx.raw/total)*100)}%)`;
+      }}}} }
+  });
+
+  renderGeoLista('lista-localidades', localidadesArr, localidadesArr[0]?.count||1);
+  renderGeoLista('lista-provincias',  provinciasArr,  provinciasArr[0]?.count||1);
+
+  document.getElementById('footer-count').textContent = `${totalTrans} transacciones · ${totalTix} tickets · ${fmt(totalRec)}`;
+  document.getElementById('last-update').textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+async function loadData() {
+  try {
+    const [ventas, diarias, tipos, totales, geoData] = await Promise.all([
+      fetchSheet("Dataset Registro Ventas!A2:H"),
+      fetchSheet("Ventas Diarias!A4:N59"),
+      fetchSheet("Dataset Tipos De Tickets!B4:F59"),
+      fetchSheet("Ventas Diarias!B4:C59"),
+      fetchSheet("Registro Ventas - Telefono!A2:I"),
+    ]);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    buildDashboard(ventas, diarias, tipos, totales, geoData);
+  } catch(err) {
+    document.getElementById('loading').style.display = 'none';
+    const errEl = document.getElementById('error-msg');
+    errEl.style.display = 'block';
+    errEl.textContent = `Error al cargar datos: ${err.message}`;
+    console.error(err);
+  }
+}
+
+document.getElementById('header-title').textContent = CONFIG.ARTISTA + ' — ' + CONFIG.VENUE;
+document.getElementById('page-title').textContent = 'Dashboard — ' + CONFIG.ARTISTA + ' · ' + CONFIG.VENUE;
+
+loadData();
+setInterval(loadData, REFRESH_MS);
+</script>
+</body>
+</html>
