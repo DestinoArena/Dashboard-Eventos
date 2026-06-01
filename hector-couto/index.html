@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,49 +8,32 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   :root {
-    --bg: #0a0a0a;
-    --bg2: #111111;
-    --bg3: #1a1a1a;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.12);
-    --text: #f0f0f0; 
-    --text2: #888;
-    --text3: #555;
-    --accent: #c8f135;
-    --accent2: #8fbb1e;
-    --accent-dim: rgba(200,241,53,0.08);
-    --red: #ff4d4d;
-    --blue: #4d9fff;
-    --amber: #ffb84d;
+    --bg: #0a0a0a; --bg2: #111111; --bg3: #1a1a1a;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+    --text: #f0f0f0; --text2: #888; --text3: #555;
+    --accent: #c8f135; --accent2: #8fbb1e; --accent-dim: rgba(200,241,53,0.08);
+    --red: #ff4d4d; --blue: #4d9fff; --amber: #ffb84d;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-height: 100vh; }
-
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 20px 32px;
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0;
-    background: rgba(10,10,10,0.95);
-    backdrop-filter: blur(12px); z-index: 100;
-  }
+  header { border-bottom: 1px solid var(--border); padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: rgba(10,10,10,0.95); backdrop-filter: blur(12px); z-index: 100; }
   .header-left { display: flex; align-items: center; gap: 16px; }
   .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 8px var(--accent)} 50%{opacity:.5;box-shadow:0 0 4px var(--accent)} }
   .header-title { font-size: 15px; font-weight: 500; letter-spacing: -0.2px; }
   .header-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .back-link { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; text-decoration: none; transition: color 0.2s; }
+  .back-link:hover { color: var(--accent); }
   .live-badge { display:flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(200,241,53,0.2);color:var(--accent);font-size:11px;font-family:'DM Mono',monospace;padding:5px 12px;border-radius:20px;letter-spacing:.5px; }
   .live-dot { width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite; }
   .last-update { font-size:11px;color:var(--text3);font-family:'DM Mono',monospace; }
-
   main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
-
   #loading { display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:16px;color:var(--text2); }
   .spinner { width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite; }
   @keyframes spin { to{transform:rotate(360deg)} }
   #error-msg { display:none;background:rgba(255,77,77,0.08);border:1px solid rgba(255,77,77,0.2);color:var(--red);padding:16px 20px;border-radius:8px;font-family:'DM Mono',monospace;font-size:12px;margin-bottom:24px; }
   #dashboard { display:none; }
-
   .kpi-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px; }
   .kpi { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;transition:border-color .2s; }
   .kpi:hover { border-color:var(--border2); }
@@ -60,17 +42,13 @@
   .kpi-value { font-size:26px;font-weight:600;letter-spacing:-1px;color:var(--text);line-height:1; }
   .kpi.accent .kpi-value { color:var(--accent); }
   .kpi-sub { font-size:11px;color:var(--text3);margin-top:6px;font-family:'DM Mono',monospace; }
-
   .charts-row { display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px; }
   .chart-card { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px; }
-  .chart-card.wide { grid-column:span 2; }
   .card-title { font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:16px; }
   .chart-wrap { position:relative;width:100%; }
-
   .legend { display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px; }
   .legend-item { display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2); }
   .legend-dot { width:8px;height:8px;border-radius:2px;flex-shrink:0; }
-
   .table-wrap { overflow-x:auto; }
   table { width:100%;border-collapse:collapse; }
   thead th { font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:400; }
@@ -78,21 +56,15 @@
   tbody tr:last-child td { border-bottom:none; }
   tbody tr:hover td { background:rgba(255,255,255,0.02); }
   .total-row td { font-weight:600;color:var(--accent);border-top:1px solid var(--border2);border-bottom:none; }
-
   .badge { display:inline-block;font-size:10px;padding:3px 8px;border-radius:20px;font-family:'DM Mono',monospace;letter-spacing:.3px; }
   .badge-green { background:rgba(200,241,53,0.1);color:var(--accent);border:1px solid rgba(200,241,53,0.2); }
   .badge-red { background:rgba(255,77,77,0.1);color:var(--red);border:1px solid rgba(255,77,77,0.2); }
   .badge-blue { background:rgba(77,159,255,0.1);color:var(--blue);border:1px solid rgba(77,159,255,0.2); }
   .badge-amber { background:rgba(255,184,77,0.1);color:var(--amber);border:1px solid rgba(255,184,77,0.2); }
-
-  .progress-wrap { margin-top:6px; }
   .progress-bar-bg { background:var(--bg3);border-radius:4px;height:4px;overflow:hidden; }
   .progress-bar-fill { height:100%;border-radius:4px;background:var(--accent);transition:width .8s ease; }
   .progress-label { display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px;font-family:'DM Mono',monospace; }
-
-  /* Geo section: 2 cols layout */
   .geo-row { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px; }
-  .geo-lists { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
   .geo-list-item { display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px; }
   .geo-list-item:last-child { border-bottom:none; }
   .geo-list-rank { font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-right:10px;width:16px;flex-shrink:0; }
@@ -100,15 +72,10 @@
   .geo-list-count { font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);margin-left:8px; }
   .geo-list-bar { height:3px;background:var(--bg3);border-radius:2px;margin-top:3px; }
   .geo-list-bar-fill { height:100%;border-radius:2px;background:var(--accent);opacity:.5; }
-
   footer { border-top:1px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;color:var(--text3);font-size:11px;font-family:'DM Mono',monospace; }
-
   @media(max-width:900px){
-    main{padding:16px}
-    .kpi-grid{grid-template-columns:repeat(2,1fr)}
-    .charts-row,.geo-row,.geo-lists{grid-template-columns:1fr}
-    .chart-card.wide{grid-column:span 1}
-    header{padding:16px}
+    main{padding:16px} .kpi-grid{grid-template-columns:repeat(2,1fr)}
+    .charts-row,.geo-row{grid-template-columns:1fr} header{padding:16px}
   }
 </style>
 </head>
@@ -122,7 +89,8 @@
       <div class="header-sub">Dashboard de ventas en tiempo real</div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:16px;">
+  <div class="header-right">
+    <a class="back-link" href="../index.html">← Volver</a>
     <span class="last-update" id="last-update">—</span>
     <span class="live-badge"><span class="live-dot"></span>EN VIVO</span>
   </div>
@@ -132,36 +100,26 @@
   <div id="loading"><div class="spinner"></div><span>Conectando con Google Sheets...</span></div>
   <div id="error-msg"></div>
   <div id="dashboard">
-
     <div class="kpi-grid" id="kpi-grid"></div>
-
     <div class="charts-row">
       <div class="chart-card">
         <div class="card-title">Tickets vendidos por tipo</div>
         <div class="legend" id="legend-dona"></div>
-        <div class="chart-wrap" style="height:200px;">
-          <canvas id="chartDona"></canvas>
-        </div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="chartDona"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="card-title">Recaudación por tipo ($)</div>
-        <div class="chart-wrap" style="height:232px;">
-          <canvas id="chartBarras"></canvas>
-        </div>
+        <div class="chart-wrap" style="height:232px;"><canvas id="chartBarras"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="card-title">Ocupación por tipo</div>
         <div id="progress-section"></div>
       </div>
     </div>
-
     <div class="chart-card" style="margin-bottom:12px;">
       <div class="card-title">Progresión de ventas por fecha</div>
-      <div class="chart-wrap" style="height:220px;">
-        <canvas id="chartLinea"></canvas>
-      </div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="chartLinea"></canvas></div>
     </div>
-
     <div class="chart-card" style="margin-bottom:12px;">
       <div class="card-title">Detalle por tipo de ticket</div>
       <div class="table-wrap">
@@ -171,19 +129,12 @@
         </table>
       </div>
     </div>
-
-    <!-- SECCIÓN GEOGRÁFICA -->
     <div class="geo-row">
-      <!-- Gráfico pastel localidades -->
       <div class="chart-card">
         <div class="card-title">Distribución por localidad</div>
         <div class="legend" id="legend-geo"></div>
-        <div class="chart-wrap" style="height:240px;">
-          <canvas id="chartGeo"></canvas>
-        </div>
+        <div class="chart-wrap" style="height:240px;"><canvas id="chartGeo"></canvas></div>
       </div>
-
-      <!-- Las dos listas lado a lado -->
       <div style="display:flex;flex-direction:column;gap:12px;">
         <div class="chart-card" style="flex:1;">
           <div class="card-title">Tickets por localidad</div>
@@ -195,7 +146,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </main>
 
@@ -211,6 +161,8 @@ const CONFIG = {
   API_KEY: 'AIzaSyAuJlNbip2fWReTMHqhOcuuJcN2V32YsA0',
   SHEET_ID: '1Ln-Ie-JmfV-Saq1tvjB0mlAjdjfcVXUGSnJOIPh5FOE',
   REFRESH_SEG: 60,
+  // FIX: claves únicas — Backstage y Pack Opening comparten precio $60.000,
+  // se diferencia por nombre genérico en transacciones
   TICKET_PRICES: {
     0:     'Acceso S/Cargo',
     15000: 'Early Pass',
@@ -219,171 +171,110 @@ const CONFIG = {
     30000: 'General Tanda 2',
     35000: 'General Tanda 3',
     40000: 'VIP Front - Tanda 1',
-    60000: 'Backstage - Tanda 1',
-    60000: 'PACK OPENING 3X2 - GENERAL',
-    90000: 'PACK NIGHT 3X2 - VIP FRONT',
+    60000: 'Ticket $60.000',
+    90000: 'Pack Night 3x2 - VIP Front',
   },
+  // FIX: columnas correctas según estructura actual del Sheet
+  // A=fecha, B=total tickets, C=total ingresos, D=Pack Night VIP, E=Pack Opening General,
+  // F=Backstage, G=VIP Front, H=Early Pass, I=Early Bird, J=Gral T1, K=Gral T2, L=Gral T3
   COL_TICKETS: [
-    { col: 3, nombre: 'PACK NIGHT 3X2 - VIP FRONT',  key: 'PACK NIGHT 3X2 - VIP FRONT',        precio: 90000 },
-    { col: 4, nombre: 'PACK OPENING 3X2 - GENERAL',  key: 'PACK OPENING 3X2 - GENERAL',         precio: 60000 },
-    { col: 5, nombre: 'Backstage - Tanda 1',  key: 'BACKSTAGE - TANDA 1',        precio: 60000 },
-    { col: 6, nombre: 'VIP Front - Tanda 1',  key: 'VIP FRONT - TANDA 1',         precio: 40000 },
-    { col: 7, nombre: 'Early Pass',            key: 'EARLY PASS (HASTA 01:00 HS)', precio: 15000 },
-    { col: 8, nombre: 'Early Bird General',    key: 'EARLY BIRD GENERAL',          precio: 20000 },
-    { col: 9, nombre: 'General Tanda 1',       key: 'GENERAL TANDA 1',             precio: 25000 },
-    { col: 10, nombre: 'General Tanda 2',       key: 'GENERAL TANDA 2',             precio: 30000 },
-    { col: 11, nombre: 'General Tanda 3',       key: 'GENERAL TANDA 3',             precio: 35000 },
+    { col: 3,  nombre: 'Pack Night 3x2 - VIP Front',   key: 'PACK NIGHT 3X2 - VIP FRONT',   precio: 90000 },
+    { col: 4,  nombre: 'Pack Opening 3x2 - General',   key: 'PACK OPENING 3X2 - GENERAL',   precio: 60000 },
+    { col: 5,  nombre: 'Backstage - Tanda 1',           key: 'BACKSTAGE - TANDA 1',           precio: 60000 },
+    { col: 6,  nombre: 'VIP Front - Tanda 1',           key: 'VIP FRONT - TANDA 1',           precio: 40000 },
+    { col: 7,  nombre: 'Early Pass',                    key: 'EARLY PASS (HASTA 01:00 HS)',   precio: 15000 },
+    { col: 8,  nombre: 'Early Bird General',            key: 'EARLY BIRD GENERAL',            precio: 20000 },
+    { col: 9,  nombre: 'General Tanda 1',               key: 'GENERAL TANDA 1',               precio: 25000 },
+    { col: 10, nombre: 'General Tanda 2',               key: 'GENERAL TANDA 2',               precio: 30000 },
+    { col: 11, nombre: 'General Tanda 3',               key: 'GENERAL TANDA 3',               precio: 35000 },
   ],
 };
 
-const API_KEY    = CONFIG.API_KEY;
 const SHEET_ID   = CONFIG.SHEET_ID;
 const REFRESH_MS = CONFIG.REFRESH_SEG * 1000;
-const TICKET_PRICES = CONFIG.TICKET_PRICES;
-const COLORS     = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4'];
+const COLORS     = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4','#f135c8','#35c8f1'];
 const GEO_COLORS = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4','#f135c8','#35c8f1','#f1c835','#c835f1'];
 
 let chartDona, chartBarras, chartLinea, chartGeo;
 
 async function fetchSheet(range) {
   const parts = range.split('!');
-  const sheetName = encodeURIComponent(parts[0]);
-  const cellRange = parts[1] || '';
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${sheetName}!${cellRange}?key=${API_KEY}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(parts[0])}!${parts[1]||''}?key=${CONFIG.API_KEY}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
-  const data = await res.json();
-  return data.values || [];
+  return (await res.json()).values || [];
 }
 
 function fmt(n) { return '$' + Math.round(n).toLocaleString('es-AR'); }
 
-function parseDate(raw) {
-  if (!raw) return null;
-  if (raw instanceof Date) return raw;
-  const s = String(raw).trim();
-  const num = parseFloat(s);
-  if (!isNaN(num) && num > 40000) return new Date((num - 25569) * 86400 * 1000);
-  const d = new Date(s);
-  return isNaN(d) ? null : d;
-}
-
-// Mapeo código de área → localidad (replicamos la lógica del Sheets)
-function codigoAreaToLocalidad(tel) {
-  if (!tel) return 'Otro código';
-  const t = String(tel).replace(/^54/, '').replace(/^9/, '');
-  if (t.startsWith('11')) return 'Buenos Aires / CABA';
-  const p3 = t.substring(0, 3);
-  const map = {
-    '220':'Moreno / GBA Oeste','221':'La Plata','223':'Mar del Plata','224':'Quilmes',
-    '225':'Tandil','226':'Balcarce','228':'Pinamar','229':'Necochea','230':'Pilar',
-    '236':'Junín','237':'Moreno / GBA Oeste','247':'Pergamino','248':'San Nicolás',
-    '249':'Tandil','261':'Mendoza','262':'San Rafael','264':'San Juan','266':'San Luis',
-    '280':'Puerto Madryn','281':'Bahía Blanca Zona','291':'Bahía Blanca','293':'Coronel Suárez',
-    '294':'Bariloche','297':'Comodoro Rivadavia','298':'General Roca','299':'Neuquén',
-    '341':'Rosario','342':'Santa Fe','343':'Paraná','345':'Concordia','346':'Gualeguaychú',
-    '348':'GBA Norte / Tigre','349':'San Pedro BA','351':'Córdoba','353':'Villa María',
-    '355':'San Francisco Cba','356':'Alta Gracia','357':'La Rioja','358':'Río Cuarto',
-    '359':'Córdoba Zona','362':'Resistencia','370':'Formosa','374':'Posadas','376':'Posadas',
-    '379':'Corrientes','380':'La Rioja','381':'San Miguel de Tucumán','382':'Catamarca',
-    '385':'Santiago del Estero','387':'Salta','388':'San Salvador de Jujuy',
-  };
-  return map[p3] || 'Otro código';
-}
-
-function localidadToProvincia(loc) {
-  const map = {
-    'Buenos Aires / CABA': 'CABA',
-    'Mar del Plata':'Buenos Aires','La Plata':'Buenos Aires','Bahía Blanca':'Buenos Aires',
-    'Quilmes':'Buenos Aires','Moreno / GBA Oeste':'Buenos Aires','Pilar':'Buenos Aires',
-    'GBA Norte / Tigre':'Buenos Aires','Junín':'Buenos Aires','Necochea':'Buenos Aires',
-    'Balcarce':'Buenos Aires','Pinamar':'Buenos Aires','San Nicolás':'Buenos Aires',
-    'Pergamino':'Buenos Aires','Bahía Blanca Zona':'Buenos Aires','Coronel Suárez':'Buenos Aires',
-    'San Pedro BA':'Buenos Aires','Tandil':'Buenos Aires',
-    'Rosario':'Santa Fe','Santa Fe':'Santa Fe',
-    'Córdoba':'Córdoba','Río Cuarto':'Córdoba','Villa María':'Córdoba',
-    'Alta Gracia':'Córdoba','San Francisco Cba':'Córdoba','Córdoba Zona':'Córdoba',
-    'Mendoza':'Mendoza','San Rafael':'Mendoza',
-    'San Juan':'San Juan',
-    'San Luis':'San Luis',
-    'Salta':'Salta',
-    'San Salvador de Jujuy':'Jujuy',
-    'San Miguel de Tucumán':'Tucumán',
-    'Catamarca':'Catamarca',
-    'Santiago del Estero':'Santiago del Estero',
-    'La Rioja':'La Rioja',
-    'Posadas':'Misiones',
-    'Corrientes':'Corrientes',
-    'Resistencia':'Chaco',
-    'Formosa':'Formosa',
-    'Paraná':'Entre Ríos','Concordia':'Entre Ríos','Gualeguaychú':'Entre Ríos',
-    'Bariloche':'Río Negro','General Roca':'Río Negro',
-    'Neuquén':'Neuquén',
-    'Puerto Madryn':'Chubut','Comodoro Rivadavia':'Chubut',
-  };
-  return map[loc] || 'Otros';
-}
-
 function renderGeoLista(containerId, data, maxCount) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = data.map((item, i) => {
+  document.getElementById(containerId).innerHTML = data.map((item, i) => {
     const pct = Math.round((item.count / maxCount) * 100);
-    return `
-      <div class="geo-list-item">
-        <span class="geo-list-rank">${i+1}</span>
-        <div style="flex:1;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span class="geo-list-name">${item.name}</span>
-            <span class="geo-list-count">${item.count}</span>
-          </div>
-          <div class="geo-list-bar"><div class="geo-list-bar-fill" style="width:${pct}%"></div></div>
+    return `<div class="geo-list-item">
+      <span class="geo-list-rank">${i+1}</span>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="geo-list-name">${item.name}</span>
+          <span class="geo-list-count">${item.count}</span>
         </div>
-      </div>`;
+        <div class="geo-list-bar"><div class="geo-list-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+    </div>`;
   }).join('');
 }
 
 function buildDashboard(ventas, diarias, tipos, totales, geoData) {
   const parsePesos = v => parseFloat(String(v||'0').replace(/[$\.]/g,'').replace(',','.')) || 0;
 
-  // tipoMaxMap
+  // Capacidades máximas desde Dataset Tipos De Tickets
   const tipoMaxMap = {};
   tipos.forEach(t => {
     const nombre = String(t[0]||'').trim().toUpperCase();
     const max = parsePesos(t[2]);
-    if (!nombre || nombre==='TOTAL') return;
+    if (!nombre || nombre === 'TOTAL') return;
     tipoMaxMap[nombre] = max || 999;
   });
 
-  const COL_TIPOS = CONFIG.COL_TICKETS;
+  // Inicializar mapa de tipos
   const tipoMap = {};
-  COL_TIPOS.forEach(ct => {
-    tipoMap[ct.nombre] = { nombre:ct.nombre, precio:ct.precio, max:tipoMaxMap[ct.key]||999, vendidos:0, recaudacion:0 };
+  CONFIG.COL_TICKETS.forEach(ct => {
+    tipoMap[ct.nombre] = {
+      nombre: ct.nombre, precio: ct.precio,
+      max: tipoMaxMap[ct.key] || tipoMaxMap[ct.key.trimEnd()] || 999,
+      vendidos: 0, recaudacion: 0
+    };
   });
 
-  let totalTix=0, totalRec=0;
-  totales.forEach(row => { totalTix += parseFloat(row[0])||0; totalRec += parsePesos(row[1]); });
+  // Totales globales desde col B (tickets) y C (ingresos) de Ventas Diarias
+  let totalTix = 0, totalRec = 0;
+  totales.forEach(row => {
+    totalTix += parseFloat(row[0]) || 0;
+    totalRec += parsePesos(row[1]);
+  });
 
+  // Conteo por tipo desde columnas de Ventas Diarias
   diarias.forEach(row => {
-    if ((parseFloat(row[1])||0) === 0) return;
-    COL_TIPOS.forEach(ct => {
-      const qty = parseFloat(row[ct.col])||0;
-      if (qty===0) return;
+    if ((parseFloat(row[1]) || 0) === 0) return;
+    CONFIG.COL_TICKETS.forEach(ct => {
+      const qty = parseFloat(row[ct.col]) || 0;
+      if (!qty) return;
       tipoMap[ct.nombre].vendidos += qty;
       tipoMap[ct.nombre].recaudacion += qty * ct.precio;
     });
   });
 
-  // Transacciones
+  // Contar transacciones
   let totalTrans = 0;
   ventas.forEach(row => {
     const total = parseFloat(row[5]);
-    if (!row[0] || isNaN(total) || total<=0) return;
+    if (!row[0] || isNaN(total) || total <= 0) return;
     totalTrans++;
   });
 
+  const ticketPromedio = totalTix > 0 ? totalRec / totalTix : 0;
+  const masVendido = Object.values(tipoMap).filter(t => t.vendidos > 0).sort((a,b) => b.vendidos - a.vendidos)[0];
+
   // KPIs
-  const ticketPromedio = totalTix > 0 ? totalRec/totalTix : 0;
-  const masVendido = Object.values(tipoMap).filter(t=>t.vendidos>0).sort((a,b)=>b.vendidos-a.vendidos)[0];
   document.getElementById('kpi-grid').innerHTML = `
     <div class="kpi accent"><div class="kpi-label">Recaudación total</div><div class="kpi-value">${fmt(totalRec)}</div><div class="kpi-sub">acumulado</div></div>
     <div class="kpi"><div class="kpi-label">Tickets vendidos</div><div class="kpi-value">${totalTix}</div><div class="kpi-sub">unidades</div></div>
@@ -392,72 +283,78 @@ function buildDashboard(ventas, diarias, tipos, totales, geoData) {
     <div class="kpi"><div class="kpi-label">Más vendido</div><div class="kpi-value" style="font-size:16px;padding-top:4px;">${masVendido?.nombre||'—'}</div><div class="kpi-sub">${masVendido?.vendidos||0} tickets</div></div>
   `;
 
-  // Charts tickets
-  const tiposArr = Object.values(tipoMap).filter(t=>t.vendidos>0).sort((a,b)=>b.vendidos-a.vendidos);
-  const labels = tiposArr.map(t=>t.nombre);
-  const cantidades = tiposArr.map(t=>t.vendidos);
-  const recaudaciones = tiposArr.map(t=>t.recaudacion);
-  const colores = tiposArr.map((_,i)=>COLORS[i%COLORS.length]);
+  const tiposArr = Object.values(tipoMap).filter(t => t.vendidos > 0).sort((a,b) => b.vendidos - a.vendidos);
+  const labels = tiposArr.map(t => t.nombre);
+  const cantidades = tiposArr.map(t => t.vendidos);
+  const recaudaciones = tiposArr.map(t => t.recaudacion);
+  const colores = tiposArr.map((_, i) => COLORS[i % COLORS.length]);
 
-  document.getElementById('legend-dona').innerHTML = tiposArr.map((t,i)=>
+  // Leyenda dona
+  document.getElementById('legend-dona').innerHTML = tiposArr.map((t,i) =>
     `<span class="legend-item"><span class="legend-dot" style="background:${colores[i]}"></span>${t.nombre} (${t.vendidos})</span>`
   ).join('');
 
+  // Chart dona
   if (chartDona) chartDona.destroy();
   chartDona = new Chart(document.getElementById('chartDona'), {
-    type:'doughnut',
-    data:{ labels, datasets:[{data:cantidades, backgroundColor:colores, borderWidth:2, borderColor:'#111'}] },
-    options:{ responsive:true, maintainAspectRatio:false, cutout:'65%',
-      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} tickets`}} } }
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: cantidades, backgroundColor: colores, borderWidth: 2, borderColor: '#111' }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '65%',
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} tickets` } } } }
   });
 
+  // Chart barras
   if (chartBarras) chartBarras.destroy();
   chartBarras = new Chart(document.getElementById('chartBarras'), {
-    type:'bar',
-    data:{ labels:labels.map(l=>l.length>12?l.substring(0,11)+'…':l), datasets:[{data:recaudaciones,backgroundColor:colores,borderRadius:4,borderSkipped:false}] },
-    options:{ responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)}`}}},
-      scales:{ x:{grid:{display:false},ticks:{color:'#555',font:{size:10}}}, y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#555',font:{size:10},callback:v=>'$'+(v/1000)+'k'}} } }
+    type: 'bar',
+    data: { labels: labels.map(l => l.length > 14 ? l.substring(0,13)+'…' : l), datasets: [{ data: recaudaciones, backgroundColor: colores, borderRadius: 4, borderSkipped: false }] },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)}` } } },
+      scales: { x: { grid: { display: false }, ticks: { color: '#555', font: { size: 10 } } }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 }, callback: v => '$'+(v/1000)+'k' } } } }
   });
 
-  // Progress
-  document.getElementById('progress-section').innerHTML = Object.values(tipoMap).filter(t=>t.vendidos>0).map(t=>{
-    const pct=Math.min(100,Math.round((t.vendidos/t.max)*100));
+  // Progress bars
+  document.getElementById('progress-section').innerHTML = Object.values(tipoMap).filter(t => t.vendidos > 0).map(t => {
+    const pct = Math.min(100, Math.round((t.vendidos / t.max) * 100));
     return `<div style="margin-bottom:14px;">
       <div class="progress-label"><span>${t.nombre}</span><span>${t.vendidos}/${t.max}</span></div>
       <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${pct>=90?'#ff4d4d':pct>=60?'#ffb84d':'#c8f135'}"></div></div>
     </div>`;
   }).join('');
 
-  // Chart linea
-  const dailyLabels=[], dailyPerDay=[];
-  diarias.forEach(row=>{
-    const fechaRaw=row[0]; if(!fechaRaw) return;
-    let fechaStr='';
-    const num=parseFloat(fechaRaw);
-    if(!isNaN(num)&&num>40000) fechaStr=new Date((num-25569)*86400*1000).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'});
-    else { const d=new Date(fechaRaw); fechaStr=isNaN(d)?String(fechaRaw).substring(0,5):d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}); }
+  // Chart línea diaria
+  const dailyLabels = [], dailyPerDay = [];
+  diarias.forEach(row => {
+    if (!row[0]) return;
+    let fechaStr = '';
+    const num = parseFloat(row[0]);
+    if (!isNaN(num) && num > 40000) {
+      fechaStr = new Date((num - 25569) * 86400 * 1000).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit' });
+    } else {
+      const d = new Date(row[0]);
+      fechaStr = isNaN(d) ? String(row[0]).substring(0,5) : d.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit' });
+    }
     dailyLabels.push(fechaStr);
-    dailyPerDay.push(parseFloat(row[1])||0);
+    dailyPerDay.push(parseFloat(row[1]) || 0);
   });
 
   if (chartLinea) chartLinea.destroy();
   chartLinea = new Chart(document.getElementById('chartLinea'), {
-    type:'bar',
-    data:{ labels:dailyLabels, datasets:[{label:'Tickets vendidos',data:dailyPerDay,backgroundColor:'#c8f135',borderRadius:4,borderSkipped:false}] },
-    options:{ responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw} tickets`}}},
-      scales:{ x:{grid:{display:false},ticks:{color:'#555',font:{size:11},maxRotation:45,autoSkip:false},offset:true}, y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#555',font:{size:11}},min:0,max:500} } }
+    type: 'bar',
+    data: { labels: dailyLabels, datasets: [{ label: 'Tickets vendidos', data: dailyPerDay, backgroundColor: '#c8f135', borderRadius: 4, borderSkipped: false }] },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} tickets` } } },
+      scales: { x: { grid: { display: false }, ticks: { color: '#555', font: { size: 11 }, maxRotation: 45, autoSkip: false }, offset: true }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 11 } }, min: 0 } } }
   });
 
   // Tabla detalle
-  document.getElementById('tabla-body').innerHTML = tiposArr.map((t,i)=>{
-    const pct=Math.round((t.recaudacion/totalRec)*100);
-    const agotado=t.vendidos>=t.max;
-    const badge=agotado?'<span class="badge badge-red">Agotado</span>':t.precio===0?'<span class="badge badge-blue">Gratuito</span>':'<span class="badge badge-green">Activo</span>';
+  document.getElementById('tabla-body').innerHTML = tiposArr.map((t, i) => {
+    const pct = totalRec > 0 ? Math.round((t.recaudacion / totalRec) * 100) : 0;
+    const agotado = t.vendidos >= t.max;
+    const badge = agotado ? '<span class="badge badge-red">Agotado</span>' : t.precio === 0 ? '<span class="badge badge-blue">Gratuito</span>' : '<span class="badge badge-green">Activo</span>';
     return `<tr>
       <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${colores[i]};margin-right:8px;"></span>${t.nombre}</td>
-      <td style="font-family:'DM Mono',monospace;">${t.precio===0?'Gratis':fmt(t.precio)}</td>
+      <td style="font-family:'DM Mono',monospace;">${t.precio === 0 ? 'Gratis' : fmt(t.precio)}</td>
       <td style="font-family:'DM Mono',monospace;">${t.vendidos}</td>
       <td style="font-family:'DM Mono',monospace;color:#555;">${t.max}</td>
       <td style="font-family:'DM Mono',monospace;">${fmt(t.recaudacion)}</td>
@@ -466,66 +363,48 @@ function buildDashboard(ventas, diarias, tipos, totales, geoData) {
     </tr>`;
   }).join('') + `<tr class="total-row"><td>Total</td><td>—</td><td>${totalTix}</td><td>—</td><td>${fmt(totalRec)}</td><td>100%</td><td>—</td></tr>`;
 
-  // ── SECCIÓN GEOGRÁFICA ──
-  // Conteo por localidad y provincia desde la hoja Registro Ventas - Telefono
-  // geoData: array de filas [col D = localidad, col G = provincia]
-  const localidadCount = {};
-  const provinciaCount = {};
-
+  // Geo
+  const localidadCount = {}, provinciaCount = {};
   geoData.forEach(row => {
-    const localidad = (row[3] || '').trim();  // col D
-    const provincia = (row[6] || '').trim();  // col G
-    if (localidad && localidad !== 'Otro código') {
-      localidadCount[localidad] = (localidadCount[localidad] || 0) + 1;
-    }
-    if (provincia && provincia !== 'Otros') {
-      provinciaCount[provincia] = (provinciaCount[provincia] || 0) + 1;
-    }
+    const loc  = (row[3] || '').trim();
+    const prov = (row[6] || '').trim();
+    if (loc && loc !== 'Otro código') localidadCount[loc] = (localidadCount[loc] || 0) + 1;
+    if (prov && prov !== 'Otros') provinciaCount[prov] = (provinciaCount[prov] || 0) + 1;
   });
 
-  const localidadesArr = Object.entries(localidadCount).map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count);
-  const provinciasArr  = Object.entries(provinciaCount).map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count);
+  const localidadesArr = Object.entries(localidadCount).map(([name,count]) => ({name,count})).sort((a,b) => b.count - a.count);
+  const provinciasArr  = Object.entries(provinciaCount).map(([name,count]) => ({name,count})).sort((a,b) => b.count - a.count);
+  const geoColores = localidadesArr.map((_, i) => GEO_COLORS[i % GEO_COLORS.length]);
 
-  const maxLoc  = localidadesArr[0]?.count || 1;
-  const maxProv = provinciasArr[0]?.count  || 1;
-
-  // Gráfico pastel localidades
-  const geoLabels = localidadesArr.map(l=>l.name);
-  const geoCounts = localidadesArr.map(l=>l.count);
-  const geoColores = localidadesArr.map((_,i)=>GEO_COLORS[i%GEO_COLORS.length]);
-
-  document.getElementById('legend-geo').innerHTML = localidadesArr.map((l,i)=>
+  document.getElementById('legend-geo').innerHTML = localidadesArr.map((l,i) =>
     `<span class="legend-item"><span class="legend-dot" style="background:${geoColores[i]}"></span>${l.name} (${l.count})</span>`
   ).join('');
 
   if (chartGeo) chartGeo.destroy();
   chartGeo = new Chart(document.getElementById('chartGeo'), {
-    type:'pie',
-    data:{ labels:geoLabels, datasets:[{data:geoCounts, backgroundColor:geoColores, borderWidth:2, borderColor:'#111'}] },
-    options:{ responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>{
-        const total=ctx.dataset.data.reduce((a,b)=>a+b,0);
-        const pct=Math.round((ctx.raw/total)*100);
-        return ` ${ctx.label}: ${ctx.raw} tickets (${pct}%)`;
-      }}} } }
+    type: 'pie',
+    data: { labels: localidadesArr.map(l => l.name), datasets: [{ data: localidadesArr.map(l => l.count), backgroundColor: geoColores, borderWidth: 2, borderColor: '#111' }] },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => {
+        const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+        return ` ${ctx.label}: ${ctx.raw} tickets (${Math.round((ctx.raw/total)*100)}%)`;
+      }}}}}
   });
 
-  // Listas
-  renderGeoLista('lista-localidades', localidadesArr, maxLoc);
-  renderGeoLista('lista-provincias',  provinciasArr,  maxProv);
+  renderGeoLista('lista-localidades', localidadesArr, localidadesArr[0]?.count || 1);
+  renderGeoLista('lista-provincias',  provinciasArr,  provinciasArr[0]?.count  || 1);
 
-  // Footer y timestamp
   document.getElementById('footer-count').textContent = `${totalTrans} transacciones · ${totalTix} tickets · ${fmt(totalRec)}`;
-  document.getElementById('last-update').textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('last-update').textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
 }
 
 async function loadData() {
   try {
     const [ventas, diarias, tipos, totales, geoData] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:H"),
-      fetchSheet("Ventas Diarias!A4:N59"),
+      fetchSheet("Ventas Diarias!A4:P59"),      // FIX: extendido a col P para cubrir todas las columnas
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
-      fetchSheet("Ventas Diarias!B4:C59"),
+      fetchSheet("Ventas Diarias!B4:C59"),       // col B=tickets, C=ingresos
       fetchSheet("Registro Ventas - Telefono!A2:I"),
     ]);
     document.getElementById('loading').style.display = 'none';
