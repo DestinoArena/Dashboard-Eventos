@@ -80,7 +80,6 @@
 </style>
 </head>
 <body>
-
 <header>
   <div class="header-left">
     <div class="logo-dot"></div>
@@ -95,7 +94,6 @@
     <span class="live-badge"><span class="live-dot"></span>EN VIVO</span>
   </div>
 </header>
-
 <main>
   <div id="loading"><div class="spinner"></div><span>Conectando con Google Sheets...</span></div>
   <div id="error-msg"></div>
@@ -148,12 +146,10 @@
     </div>
   </div>
 </main>
-
 <footer>
   <span>Destino Arena · Sistema de ventas</span>
   <span id="footer-count">—</span>
 </footer>
-
 <script>
 const CONFIG = {
   ARTISTA: '19:26',
@@ -169,23 +165,21 @@ const CONFIG = {
     30000: 'General Tanda 2',
     35000: 'General Tanda 3',
     40000: 'VIP Front - Tanda 1',
+    45000: 'VIP Front - Tanda 2',
     60000: 'Ticket $60.000',
     90000: 'Pack Night 3x2 - VIP Front',
   },
-  // A=fecha, B=total tickets, C=total ingresos
-  // D=Pack Night VIP, E=Pack Opening General
-  // F=Backstage, G=VIP Front, H=Early Pass, I=Early Bird
-  // J=Gral T1, K=Gral T2, L=Gral T3
   COL_TICKETS: [
     { col: 3,  nombre: 'Pack Night 3x2 - VIP Front',  key: 'PACK NIGHT 3X2 - VIP FRONT',   precio: 90000 },
     { col: 4,  nombre: 'Pack Opening 3x2 - General',  key: 'PACK OPENING 3X2 - GENERAL',   precio: 60000 },
     { col: 5,  nombre: 'Backstage - Tanda 1',          key: 'BACKSTAGE - TANDA 1',           precio: 60000 },
     { col: 6,  nombre: 'VIP Front - Tanda 1',          key: 'VIP FRONT - TANDA 1',           precio: 40000 },
-    { col: 7,  nombre: 'Early Pass',                   key: 'EARLY PASS (HASTA 01:00 HS)',   precio: 15000 },
-    { col: 8,  nombre: 'Early Bird General',           key: 'EARLY BIRD GENERAL',            precio: 20000 },
-    { col: 9,  nombre: 'General Tanda 1',              key: 'GENERAL TANDA 1',               precio: 25000 },
-    { col: 10, nombre: 'General Tanda 2',              key: 'GENERAL TANDA 2',               precio: 30000 },
-    { col: 11, nombre: 'General Tanda 3',              key: 'GENERAL TANDA 3',               precio: 35000 },
+    { col: 7,  nombre: 'VIP Front - Tanda 2',          key: 'VIP FRONT - TANDA 2',           precio: 45000 },
+    { col: 8,  nombre: 'Early Pass',                   key: 'EARLY PASS (HASTA 01:00 HS)',   precio: 15000 },
+    { col: 9,  nombre: 'Early Bird General',           key: 'EARLY BIRD GENERAL',            precio: 20000 },
+    { col: 10, nombre: 'General Tanda 1',              key: 'GENERAL TANDA 1',               precio: 25000 },
+    { col: 11, nombre: 'General Tanda 2',              key: 'GENERAL TANDA 2',               precio: 30000 },
+    { col: 12, nombre: 'General Tanda 3',              key: 'GENERAL TANDA 3',               precio: 35000 },
   ],
 };
 
@@ -206,6 +200,10 @@ async function fetchSheet(range) {
 
 function fmt(n) { return '$' + Math.round(n).toLocaleString('es-AR'); }
 
+function parsePesos(v) {
+  return parseFloat(String(v||'0').replace(/\$/g,'').replace(/\./g,'').replace(',','.').trim()) || 0;
+}
+
 function renderGeoLista(containerId, data, maxCount) {
   document.getElementById(containerId).innerHTML = data.map((item, i) => {
     const pct = Math.round((item.count / maxCount) * 100);
@@ -223,8 +221,6 @@ function renderGeoLista(containerId, data, maxCount) {
 }
 
 function buildDashboard(ventas, diarias, tipos, totales, geoData) {
-  const parsePesos = v => parseFloat(String(v||'0').replace(/[$\.]/g,'').replace(',','.')) || 0;
-
   const tipoMaxMap = {};
   tipos.forEach(t => {
     const nombre = String(t[0]||'').trim().toUpperCase();
@@ -242,14 +238,13 @@ function buildDashboard(ventas, diarias, tipos, totales, geoData) {
     };
   });
 
-  // Totales desde fila de suma del Sheet (B60:C60)
+  // Totales desde fila 61 del Sheet
   let totalTix = 0, totalRec = 0;
-  totales.forEach(row => {
-    totalTix += parseFloat(row[0]) || 0;
-    totalRec += parsePesos(row[1]);
-  });
+  if (totales.length > 0 && totales[0].length >= 2) {
+    totalTix = parseFloat(totales[0][0]) || 0;
+    totalRec = parsePesos(totales[0][1]);
+  }
 
-  // Conteo por tipo
   diarias.forEach(row => {
     if ((parseFloat(row[1]) || 0) === 0) return;
     CONFIG.COL_TICKETS.forEach(ct => {
@@ -352,7 +347,6 @@ function buildDashboard(ventas, diarias, tipos, totales, geoData) {
     </tr>`;
   }).join('') + `<tr class="total-row"><td>Total</td><td>—</td><td>${totalTix}</td><td>—</td><td>${fmt(totalRec)}</td><td>100%</td><td>—</td></tr>`;
 
-  // Geo
   const localidadCount = {}, provinciaCount = {};
   geoData.forEach(row => {
     const loc  = (row[3] || '').trim();
@@ -391,9 +385,9 @@ async function loadData() {
   try {
     const [ventas, diarias, tipos, totales, geoData] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:H"),
-      fetchSheet("Ventas Diarias!A4:P59"),
+      fetchSheet("Ventas Diarias!A4:Q59"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
-      fetchSheet("Ventas Diarias!B60:C60"),      // fila de totales del Sheet
+      fetchSheet("Ventas Diarias!B61:C61"),
       fetchSheet("Registro Ventas - Telefono!A2:I"),
     ]);
     document.getElementById('loading').style.display = 'none';
