@@ -169,6 +169,10 @@ const CONFIG = {
     60000: 'Ticket $60.000',
     90000: 'Pack Night 3x2 - VIP Front',
   },
+  // A=fecha, B=total tickets, C=total ingresos
+  // D=Pack Night VIP, E=Pack Opening General, F=Backstage
+  // G=VIP Front T1, H=VIP Front T2, I=Early Pass
+  // J=Early Bird, K=Gral T1, L=Gral T2, M=Gral T3
   COL_TICKETS: [
     { col: 3,  nombre: 'Pack Night 3x2 - VIP Front',  key: 'PACK NIGHT 3X2 - VIP FRONT',   precio: 90000 },
     { col: 4,  nombre: 'Pack Opening 3x2 - General',  key: 'PACK OPENING 3X2 - GENERAL',   precio: 60000 },
@@ -220,7 +224,7 @@ function renderGeoLista(containerId, data, maxCount) {
   }).join('');
 }
 
-function buildDashboard(ventas, diarias, tipos, totales, geoData) {
+function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, geoData) {
   const tipoMaxMap = {};
   tipos.forEach(t => {
     const nombre = String(t[0]||'').trim().toUpperCase();
@@ -238,12 +242,9 @@ function buildDashboard(ventas, diarias, tipos, totales, geoData) {
     };
   });
 
-  // Totales desde fila 61 del Sheet
-  let totalTix = 0, totalRec = 0;
-  if (totales.length > 0 && totales[0].length >= 2) {
-    totalTix = parseFloat(totales[0][0]) || 0;
-    totalRec = parsePesos(totales[0][1]);
-  }
+  // Totales desde filas separadas del Sheet
+  const totalTix = parseFloat(totalesTix[0]?.[0]) || 0;
+  const totalRec = parsePesos(totalesRec[0]?.[0]);
 
   diarias.forEach(row => {
     if ((parseFloat(row[1]) || 0) === 0) return;
@@ -383,16 +384,17 @@ function buildDashboard(ventas, diarias, tipos, totales, geoData) {
 
 async function loadData() {
   try {
-    const [ventas, diarias, tipos, totales, geoData] = await Promise.all([
+    const [ventas, diarias, tipos, totalesTix, totalesRec, geoData] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:H"),
       fetchSheet("Ventas Diarias!A4:Q59"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
-      fetchSheet("Ventas Diarias!B61:C61"),
+      fetchSheet("Ventas Diarias!B60:B60"),
+      fetchSheet("Ventas Diarias!C61:C61"),
       fetchSheet("Registro Ventas - Telefono!A2:I"),
     ]);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    buildDashboard(ventas, diarias, tipos, totales, geoData);
+    buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, geoData);
   } catch(err) {
     document.getElementById('loading').style.display = 'none';
     const errEl = document.getElementById('error-msg');
