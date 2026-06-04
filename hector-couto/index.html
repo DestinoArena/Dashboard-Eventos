@@ -166,6 +166,7 @@ const CONFIG = {
     35000: 'General Tanda 3',
     40000: 'VIP Front - Tanda 1',
     45000: 'VIP Front - Tanda 2',
+    17000: 'Pack Pass',
     60000: 'Ticket $60.000',
     90000: 'Pack Night 3x2 - VIP Front',
   },
@@ -180,10 +181,11 @@ const CONFIG = {
     { col: 6,  nombre: 'VIP Front - Tanda 1',          key: 'VIP FRONT - TANDA 1',           precio: 40000 },
     { col: 7,  nombre: 'VIP Front - Tanda 2',          key: 'VIP FRONT - TANDA 2',           precio: 45000 },
     { col: 8,  nombre: 'Early Pass',                   key: 'EARLY PASS (HASTA 01:00 HS)',   precio: 15000 },
-    { col: 9,  nombre: 'Early Bird General',           key: 'EARLY BIRD GENERAL',            precio: 20000 },
-    { col: 10, nombre: 'General Tanda 1',              key: 'GENERAL TANDA 1',               precio: 25000 },
-    { col: 11, nombre: 'General Tanda 2',              key: 'GENERAL TANDA 2',               precio: 30000 },
-    { col: 12, nombre: 'General Tanda 3',              key: 'GENERAL TANDA 3',               precio: 35000 },
+    { col: 9,  nombre: 'Pack Pass',                    key: 'PACK PASS (INGRESO H/2:00 AM)', precio: 17000 },
+    { col: 10, nombre: 'Early Bird General',           key: 'EARLY BIRD GENERAL',            precio: 20000 },
+    { col: 11, nombre: 'General Tanda 1',              key: 'GENERAL TANDA 1',               precio: 25000 },
+    { col: 12, nombre: 'General Tanda 2',              key: 'GENERAL TANDA 2',               precio: 30000 },
+    { col: 13, nombre: 'General Tanda 3',              key: 'GENERAL TANDA 3',               precio: 35000 },
   ],
 };
 
@@ -386,7 +388,7 @@ async function loadData() {
   try {
     const [ventas, diarias, tipos, totalesTix, totalesRec, geoData] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:H"),
-      fetchSheet("Ventas Diarias!A4:Q59"),
+      fetchSheet("Ventas Diarias!A4:R59"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
       fetchSheet("Ventas Diarias!B60:B60"),
       fetchSheet("Ventas Diarias!C61:C61"),
