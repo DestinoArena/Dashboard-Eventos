@@ -238,6 +238,73 @@ function parsePesos(v) {
   return parseFloat(String(v||'0').replace(/\$/g,'').replace(/\./g,'').replace(',','.').trim()) || 0;
 }
 
+
+  function telToLocalidad(tel) {
+    if (!tel) return null;
+    const t = String(tel).replace(/^54/, '').replace(/^9/, '');
+    if (t.startsWith('11')) return 'Buenos Aires / CABA';
+    const p3 = t.substring(0, 3);
+    const map = {
+      '220':'Moreno / GBA Oeste','221':'La Plata','223':'Mar del Plata','224':'Quilmes',
+      '225':'Tandil','226':'Balcarce','227':'Chascomús','228':'Pinamar','229':'Necochea',
+      '230':'Pilar','231':'Luján','232':'Mercedes BA','233':'Trenque Lauquen','234':'Chivilcoy',
+      '235':'Lincoln','236':'Junín','237':'Moreno / GBA Oeste','238':'Villa Mercedes SL',
+      '239':'Bahía Blanca Zona','244':'Azul','245':'Olavarría','246':'Pehuajó',
+      '247':'Pergamino','248':'San Nicolás','249':'Tandil','260':'San Rafael',
+      '261':'Mendoza','262':'San Rafael','263':'Malargüe','264':'San Juan',
+      '265':'San Juan Zona','266':'San Luis','267':'Villa Mercedes SL','280':'Puerto Madryn',
+      '281':'Bahía Blanca Zona','283':'Tres Arroyos','290':'Viedma','291':'Bahía Blanca',
+      '292':'Necochea','293':'Coronel Suárez','294':'Bariloche','295':'Río Gallegos',
+      '297':'Comodoro Rivadavia','298':'General Roca','299':'Neuquén',
+      '341':'Rosario','342':'Santa Fe','343':'Paraná','345':'Concordia','346':'Gualeguaychú',
+      '347':'Villaguay','348':'GBA Norte / Tigre','349':'San Pedro BA',
+      '351':'Córdoba','352':'Villa María Zona','353':'Villa María','354':'Río Cuarto Zona',
+      '355':'San Francisco Cba','356':'Alta Gracia','357':'La Rioja','358':'Río Cuarto',
+      '359':'Córdoba Zona','362':'Resistencia','364':'Pres. Roque Sáenz Peña',
+      '370':'Formosa','372':'Clorinda','374':'Posadas','375':'Oberá','376':'Posadas',
+      '377':'Eldorado','378':'Iguazú','379':'Corrientes','380':'La Rioja',
+      '381':'San Miguel de Tucumán','382':'Catamarca','383':'Catamarca',
+      '385':'Santiago del Estero','386':'Termas de Río Hondo','387':'Salta',
+      '388':'San Salvador de Jujuy','389':'Jujuy Zona',
+    };
+    return map[p3] || null;
+  }
+
+  function localidadToProvincia(loc) {
+    if (!loc) return null;
+    const map = {
+      'Buenos Aires / CABA':'CABA',
+      'Mar del Plata':'Buenos Aires','La Plata':'Buenos Aires','Bahía Blanca':'Buenos Aires',
+      'Quilmes':'Buenos Aires','Moreno / GBA Oeste':'Buenos Aires','Pilar':'Buenos Aires',
+      'GBA Norte / Tigre':'Buenos Aires','Junín':'Buenos Aires','Necochea':'Buenos Aires',
+      'Balcarce':'Buenos Aires','Pinamar':'Buenos Aires','San Nicolás':'Buenos Aires',
+      'Pergamino':'Buenos Aires','Bahía Blanca Zona':'Buenos Aires','Coronel Suárez':'Buenos Aires',
+      'San Pedro BA':'Buenos Aires','Tandil':'Buenos Aires','Azul':'Buenos Aires',
+      'Olavarría':'Buenos Aires','Chivilcoy':'Buenos Aires','Lincoln':'Buenos Aires',
+      'Tres Arroyos':'Buenos Aires','Chascomús':'Buenos Aires','Mercedes BA':'Buenos Aires',
+      'Trenque Lauquen':'Buenos Aires','Pehuajó':'Buenos Aires','Luján':'Buenos Aires',
+      'Rosario':'Santa Fe','Santa Fe':'Santa Fe',
+      'Córdoba':'Córdoba','Río Cuarto':'Córdoba','Villa María':'Córdoba',
+      'Alta Gracia':'Córdoba','San Francisco Cba':'Córdoba','Córdoba Zona':'Córdoba',
+      'Río Cuarto Zona':'Córdoba','Villa María Zona':'Córdoba',
+      'Mendoza':'Mendoza','San Rafael':'Mendoza','Malargüe':'Mendoza',
+      'San Juan':'San Juan','San Juan Zona':'San Juan',
+      'San Luis':'San Luis','Villa Mercedes SL':'San Luis',
+      'Salta':'Salta','San Salvador de Jujuy':'Jujuy','Jujuy Zona':'Jujuy',
+      'San Miguel de Tucumán':'Tucumán','Catamarca':'Catamarca',
+      'Santiago del Estero':'Santiago del Estero','Termas de Río Hondo':'Santiago del Estero',
+      'La Rioja':'La Rioja','Posadas':'Misiones','Oberá':'Misiones',
+      'Eldorado':'Misiones','Iguazú':'Misiones','Corrientes':'Corrientes',
+      'Resistencia':'Chaco','Pres. Roque Sáenz Peña':'Chaco',
+      'Formosa':'Formosa','Clorinda':'Formosa',
+      'Paraná':'Entre Ríos','Concordia':'Entre Ríos','Gualeguaychú':'Entre Ríos','Villaguay':'Entre Ríos',
+      'Bariloche':'Río Negro','Viedma':'Río Negro','General Roca':'Río Negro',
+      'Neuquén':'Neuquén','Puerto Madryn':'Chubut','Comodoro Rivadavia':'Chubut',
+      'Río Gallegos':'Santa Cruz',
+    };
+    return map[loc] || null;
+  }
+
 function renderGeoLista(containerId, data, maxCount) {
   document.getElementById(containerId).innerHTML = data.map((item, i) => {
     const pct = Math.round((item.count / maxCount) * 100);
@@ -254,7 +321,7 @@ function renderGeoLista(containerId, data, maxCount) {
   }).join('');
 }
 
-function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, geoData) {
+function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec) {
   const tipoMaxMap = {};
   tipos.forEach(t => {
     const nombre = String(t[0]||'').trim().toUpperCase();
@@ -378,12 +445,15 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, geoData)
     </tr>`;
   }).join('') + `<tr class="total-row"><td>Total</td><td>—</td><td>${totalTix}</td><td>—</td><td>${fmt(totalRec)}</td><td>100%</td><td>—</td></tr>`;
 
+  // Geo calculado directamente desde teléfonos de Dataset Registro Ventas
   const localidadCount = {}, provinciaCount = {};
-  geoData.forEach(row => {
-    const loc  = (row[3] || '').trim();
-    const prov = (row[6] || '').trim();
-    if (loc && loc !== 'Otro código') localidadCount[loc] = (localidadCount[loc] || 0) + 1;
-    if (prov && prov !== 'Otros') provinciaCount[prov] = (provinciaCount[prov] || 0) + 1;
+  ventas.forEach(row => {
+    if (!row[0]) return; // skip empty rows
+    const tel = String(row[2] || '').trim();
+    const loc = telToLocalidad(tel);
+    const prov = loc ? localidadToProvincia(loc) : null;
+    if (loc) localidadCount[loc] = (localidadCount[loc] || 0) + 1;
+    if (prov) provinciaCount[prov] = (provinciaCount[prov] || 0) + 1;
   });
 
   const localidadesArr = Object.entries(localidadCount).map(([name,count]) => ({name,count})).sort((a,b) => b.count - a.count);
@@ -471,17 +541,16 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, geoData)
 
 async function loadData() {
   try {
-    const [ventas, diarias, tipos, totalesTix, totalesRec, geoData] = await Promise.all([
-      fetchSheet("Dataset Registro Ventas!A2:H500"),
+    const [ventas, diarias, tipos, totalesTix, totalesRec] = await Promise.all([
+      fetchSheet("Dataset Registro Ventas!A2:C500"),
       fetchSheet("Ventas Diarias!A4:R59"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
       fetchSheet("Ventas Diarias!B60:B60"),
       fetchSheet("Ventas Diarias!C61:C61"),
-      fetchSheet("Registro Ventas - Telefono!A2:I500"),
     ]);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, geoData);
+    buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec);
   } catch(err) {
     document.getElementById('loading').style.display = 'none';
     const errEl = document.getElementById('error-msg');
