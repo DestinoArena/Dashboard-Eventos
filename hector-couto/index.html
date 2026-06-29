@@ -222,6 +222,7 @@ const CONFIG = {
     45000: 'VIP Front - Tanda 2',
     17000: 'Pack Pass',
     30000: 'Pack Amigos 2x1',
+    16000: 'Pack Amigos 2x1 (2)',
     60000: 'Ticket $60.000',
     90000: 'Pack Night 3x2 - VIP Front',
   },
@@ -233,15 +234,16 @@ const CONFIG = {
     { col: 3,  nombre: 'Pack Night 3x2 - VIP Front',  key: 'PACK NIGHT 3X2 - VIP FRONT',   precio: 90000 },
     { col: 4,  nombre: 'Pack 3x2 - General',          key: 'PACK 3X2 - GENERAL (INGRESO H/02:30 AM)', precio: 60000 },
     { col: 5,  nombre: 'Pack Amigos 2x1',             key: 'PACK AMIGOS 2X1',               precio: 30000 },
-    { col: 6,  nombre: 'Backstage - Tanda 1',          key: 'BACKSTAGE - TANDA 1',           precio: 60000 },
-    { col: 7,  nombre: 'VIP Front - Tanda 1',          key: 'VIP FRONT - TANDA 1',           precio: 40000 },
-    { col: 8,  nombre: 'VIP Front - Tanda 2',          key: 'VIP FRONT - TANDA 2',           precio: 45000 },
-    { col: 9,  nombre: 'Early Pass',                   key: 'EARLY PASS (HASTA 01:00 HS)',   precio: 15000 },
-    { col: 10, nombre: 'Pack Pass',                    key: 'PACK PASS (INGRESO H/2:00 AM)', precio: 17000 },
-    { col: 11, nombre: 'Early Bird General',           key: 'EARLY BIRD GENERAL',            precio: 20000 },
-    { col: 12, nombre: 'General Tanda 1',              key: 'GENERAL TANDA 1',               precio: 25000 },
-    { col: 13, nombre: 'General Tanda 2',              key: 'GENERAL TANDA 2',               precio: 30000 },
-    { col: 14, nombre: 'General Tanda 3',              key: 'GENERAL TANDA 3',               precio: 35000 },
+    { col: 6,  nombre: 'Pack Amigos 2x1 (2)',         key: 'PACK AMIGOS 2X1',               precio: 16000 },
+    { col: 7,  nombre: 'Backstage - Tanda 1',          key: 'BACKSTAGE - TANDA 1',           precio: 60000 },
+    { col: 8,  nombre: 'VIP Front - Tanda 1',          key: 'VIP FRONT - TANDA 1',           precio: 40000 },
+    { col: 9,  nombre: 'VIP Front - Tanda 2',          key: 'VIP FRONT - TANDA 2',           precio: 45000 },
+    { col: 10, nombre: 'Early Pass',                   key: 'EARLY PASS (HASTA 01:00 HS)',   precio: 15000 },
+    { col: 11, nombre: 'Pack Pass',                    key: 'PACK PASS (INGRESO H/2:00 AM)', precio: 17000 },
+    { col: 12, nombre: 'Early Bird General',           key: 'EARLY BIRD GENERAL',            precio: 20000 },
+    { col: 13, nombre: 'General Tanda 1',              key: 'GENERAL TANDA 1',               precio: 25000 },
+    { col: 14, nombre: 'General Tanda 2',              key: 'GENERAL TANDA 2',               precio: 30000 },
+    { col: 15, nombre: 'General Tanda 3',              key: 'GENERAL TANDA 3',               precio: 35000 },
   ],
 };
 
@@ -412,7 +414,8 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec) {
 
   let totalTrans = 0;
   ventas.forEach(row => {
-    if (!row[0]) return;
+    const total = parseFloat(row[5]);
+    if (!row[0] || isNaN(total) || total <= 0) return;
     totalTrans++;
   });
 
@@ -588,7 +591,7 @@ async function loadData() {
   try {
     const [ventas, diarias, tipos, totalesTix, totalesRec] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:C500"),
-      fetchSheet("Ventas Diarias!A4:S59"),
+      fetchSheet("Ventas Diarias!A4:T59"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
       fetchSheet("Ventas Diarias!B60:B60"),
       fetchSheet("Ventas Diarias!C61:C61"),
