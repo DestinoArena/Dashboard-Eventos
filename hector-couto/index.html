@@ -157,7 +157,7 @@
       <div class="card-title">Detalle por tipo de ticket</div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Tipo</th><th>Precio unitario</th><th>Vendidos</th><th>Cap. máx.</th><th>Recaudación</th><th>% del total</th><th>Estado</th></tr></thead>
+          <thead><tr><th>Tipo</th><th>Precio unitario</th><th>Vendidos</th><th>Cap. máx.</th><th>Recaudación</th><th>% del total</th></tr></thead>
           <tbody id="tabla-body"></tbody>
         </table>
       </div>
@@ -497,7 +497,6 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec) {
       <td style="font-family:'DM Mono',monospace;color:#555;">${t.max}</td>
       <td style="font-family:'DM Mono',monospace;">${fmt(t.recaudacion)}</td>
       <td style="font-family:'DM Mono',monospace;color:#888;">${pct}%</td>
-      <td>${badge}</td>
     </tr>`;
   }).join('') + `<tr class="total-row"><td>Total</td><td>—</td><td>${totalTix}</td><td>—</td><td>${fmt(totalRec)}</td><td>100%</td><td>—</td></tr>`;
 
