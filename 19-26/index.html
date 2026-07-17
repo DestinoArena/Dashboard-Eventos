@@ -204,18 +204,20 @@ const CONFIG = {
   // G=VIP Front T1, H=VIP Front T2, I=Early Pass
   // J=Early Bird, K=Gral T1, L=Gral T2, M=Gral T3
   COL_TICKETS: [
-    { col: 3,  nombre: 'Pack Night 3x2 - VIP Front',  key: 'PACK NIGHT 3X2 - VIP FRONT',             precio: 90000 },
-    { col: 4,  nombre: 'Pack Opening 3x2 - General',  key: 'PACK OPENING 3X2 - GENERAL',             precio: 60000 },
-    { col: 5,  nombre: 'Backstage - Tanda 1',          key: 'BACKSTAGE - TANDA 1',                    precio: 60000 },
-    { col: 6,  nombre: 'VIP Front - Tanda 1',          key: 'VIP FRONT - TANDA 1',                    precio: 40000 },
-    { col: 7,  nombre: 'VIP Front - Tanda 2',          key: 'VIP FRONT - TANDA 2',                    precio: 45000 },
-    { col: 8,  nombre: 'Early Pass',                   key: 'EARLY PASS (HASTA 01:00 HS)',            precio: 15000 },
-    { col: 9,  nombre: 'Early Pass 1',                 key: 'EARLY PASS 1 (INGRESO HASTA LAS 01:00 HS)', precio: 12000 },
-    { col: 10, nombre: 'Mundial Pass',                 key: 'MUNDIAL PASS (INGRESO HASTA 02:00 AM)',  precio: 15000 },
-    { col: 11, nombre: 'Early Bird General',           key: 'EARLY BIRD GENERAL',                     precio: 20000 },
-    { col: 12, nombre: 'General Tanda 1',              key: 'GENERAL TANDA 1',                        precio: 25000 },
-    { col: 13, nombre: 'General Tanda 2',              key: 'GENERAL TANDA 2',                        precio: 30000 },
-    { col: 14, nombre: 'General Tanda 3',              key: 'GENERAL TANDA 3',                        precio: 35000 },
+    { col: 3,  nombre: 'Pack Night 3x2 - VIP Front',  key: 'PACK NIGHT 3X2 - VIP FRONT',                      precio: 90000 },
+    { col: 4,  nombre: 'Pack Opening 3x2 - General',  key: 'PACK OPENING 3X2 - GENERAL',                      precio: 60000 },
+    { col: 5,  nombre: 'Backstage - Tanda 1',          key: 'BACKSTAGE - TANDA 1',                             precio: 60000 },
+    { col: 6,  nombre: 'VIP Front - Tanda 1',          key: 'VIP FRONT - TANDA 1',                             precio: 40000 },
+    { col: 7,  nombre: 'VIP Front - Tanda 2',          key: 'VIP FRONT - TANDA 2',                             precio: 45000 },
+    { col: 8,  nombre: 'Early Pass',                   key: 'EARLY PASS (HASTA 01:00 HS)',                     precio: 15000 },
+    { col: 9,  nombre: 'Early Pass 1',                 key: 'EARLY PASS 1 (INGRESO HASTA LAS 01:00 HS)',       precio: 12000 },
+    { col: 10, nombre: 'Mundial Pass',                 key: 'MUNDIAL PASS (INGRESO HASTA 02:00 AM)',           precio: 15000 },
+    { col: 11, nombre: 'Mundial Pass 1',               key: 'MUNDIAL PASS 1 (INGRESO HASTA 01:00 AM)',         precio: 16000 },
+    { col: 12, nombre: 'Mundial Pass 2',               key: 'MUNDIAL PASS 2 (INGRESO HASTA 02:00 AM)',         precio: 20000 },
+    { col: 13, nombre: 'Early Bird General',           key: 'EARLY BIRD GENERAL',                              precio: 20000 },
+    { col: 14, nombre: 'General Tanda 1',              key: 'GENERAL TANDA 1',                                 precio: 25000 },
+    { col: 15, nombre: 'General Tanda 2',              key: 'GENERAL TANDA 2',                                 precio: 30000 },
+    { col: 16, nombre: 'General Tanda 3',              key: 'GENERAL TANDA 3',                                 precio: 32000 },
   ],
 };
 
@@ -555,7 +557,7 @@ async function loadData() {
   try {
     const [ventas, diarias, tipos, totalesTix, totalesRec] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:C500"),
-      fetchSheet("Ventas Diarias!A4:S59"),
+      fetchSheet("Ventas Diarias!A4:U59"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
       fetchSheet("Ventas Diarias!B60:B60"),
       fetchSheet("Ventas Diarias!C61:C61"),
