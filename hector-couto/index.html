@@ -419,8 +419,7 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec) {
 
   let totalTrans = 0;
   ventas.forEach(row => {
-    const total = parseFloat(row[5]);
-    if (!row[0] || isNaN(total) || total <= 0) return;
+    if (!row[0]) return;
     totalTrans++;
   });
 
