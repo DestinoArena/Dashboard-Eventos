@@ -557,7 +557,7 @@ async function loadData() {
   try {
     const [ventas, diarias, tipos, totalesTix, totalesRec] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:C500"),
-      fetchSheet("Ventas Diarias!A4:V59"),
+      fetchSheet("Ventas Diarias!A4:V85"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
       fetchSheet("Ventas Diarias!B86:B86"),
       fetchSheet("Ventas Diarias!C87:C87"),
