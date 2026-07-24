@@ -136,6 +136,11 @@
         </table>
       </div>
     </div>
+    <div class="chart-card" style="margin-bottom:12px;">
+      <div class="card-title">Transacciones por franja horaria</div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="chartHorario"></canvas></div>
+    </div>
+
     <div class="geo-row">
       <div class="chart-card">
         <div class="card-title">Distribución por localidad</div>
@@ -227,7 +232,7 @@ const REFRESH_MS = CONFIG.REFRESH_SEG * 1000;
 const COLORS     = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4','#f135c8','#35c8f1'];
 const GEO_COLORS = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4','#f135c8','#35c8f1','#f1c835','#c835f1'];
 
-let chartDona, chartBarras, chartLinea, chartGeo;
+let chartDona, chartBarras, chartLinea, chartGeo, chartHorario;
 
 async function fetchSheet(range) {
   const parts = range.split('!');
@@ -355,7 +360,7 @@ function parseFecha(raw) {
   }).join('');
 }
 
-function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec) {
+function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios) {
   const tipoMaxMap = {};
   tipos.forEach(t => {
     const nombre = String(t[0]||'').trim().toUpperCase();
@@ -499,6 +504,68 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec) {
       }}}}}
   });
 
+  // ── GRÁFICO HORARIO ──
+  const franjas = Array(24).fill(0);
+
+  horarios.forEach(row => {
+    const raw = (row[0] || '').toString().trim();
+    if (!raw) return;
+
+    let hora = null;
+
+    // Número serial de Sheets
+    const num = parseFloat(raw);
+    if (!isNaN(num) && num > 1 && raw.indexOf('/') === -1) {
+      const d = new Date((num - 25569) * 86400 * 1000);
+      hora = d.getUTCHours();
+    } else {
+      // Formato DD/MM/YYYY H:MM:SS o DD/MM/YYYY HH:MM:SS
+      const parts = raw.split(' ');
+      if (parts.length >= 2) {
+        const timeParts = parts[1].split(':');
+        hora = parseInt(timeParts[0]);
+      }
+    }
+
+    if (hora !== null && hora >= 0 && hora < 24) {
+      franjas[hora]++;
+    }
+  });
+
+  const horaLabels = Array.from({length: 24}, (_, i) => `${String(i).padStart(2,'0')}:00`);
+  const horaColors = franjas.map(v => {
+    const max = Math.max(...franjas);
+    const ratio = max > 0 ? v / max : 0;
+    return ratio > 0.7 ? '#c8f135' : ratio > 0.4 ? '#4d9fff' : '#2a2a2a';
+  });
+
+  if (chartHorario) chartHorario.destroy();
+  chartHorario = new Chart(document.getElementById('chartHorario'), {
+    type: 'bar',
+    data: {
+      labels: horaLabels,
+      datasets: [{
+        label: 'Transacciones',
+        data: franjas,
+        backgroundColor: horaColors,
+        borderRadius: 3,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.raw} transacciones` } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#555', font: { size: 10 }, maxRotation: 0 } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 } }, min: 0 }
+      }
+    }
+  });
+
   renderGeoLista('lista-localidades', localidadesArr, localidadesArr[0]?.count || 1);
   renderGeoLista('lista-provincias',  provinciasArr,  provinciasArr[0]?.count  || 1);
 
@@ -555,8 +622,9 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec) {
 
 async function loadData() {
   try {
-    const [ventas, diarias, tipos, totalesTix, totalesRec] = await Promise.all([
+    const [ventas, diarias, tipos, totalesTix, totalesRec, horarios] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:C500"),
+      fetchSheet("Dataset Registro Ventas!G2:G500"),
       fetchSheet("Ventas Diarias!A4:V85"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
       fetchSheet("Ventas Diarias!B86:B86"),
@@ -564,7 +632,7 @@ async function loadData() {
     ]);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec);
+    buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios);
   } catch(err) {
     document.getElementById('loading').style.display = 'none';
     const errEl = document.getElementById('error-msg');
