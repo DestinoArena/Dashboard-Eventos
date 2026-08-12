@@ -42,6 +42,14 @@
   .kpi-value { font-size:26px;font-weight:600;letter-spacing:-1px;color:var(--text);line-height:1; }
   .kpi.accent .kpi-value { color:var(--accent); }
   .kpi-sub { font-size:11px;color:var(--text3);margin-top:6px;font-family:'DM Mono',monospace; }
+  .tix-breakdown { display:flex; flex-direction:column; gap:6px; }
+  .tix-row { display:flex; align-items:baseline; gap:8px; }
+  .tix-label { font-size:11px; text-transform:uppercase; letter-spacing:.8px; font-family:'DM Mono',monospace; }
+  .tix-label.tix-main { color:var(--accent); font-size:12px; }
+  .tix-label.tix-sub { color:var(--text2); }
+  .tix-num { font-family:'DM Mono',monospace; color:var(--text); font-weight:600; }
+  .tix-num.tix-main { font-size:26px; }
+  .tix-num.tix-sub { font-size:18px; }
   .charts-row { display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px; }
   .chart-card { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px; }
   .card-title { font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:16px; }
@@ -389,7 +397,13 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
 
   document.getElementById('kpi-grid').innerHTML = `
     <div class="kpi accent"><div class="kpi-label">Recaudación total</div><div class="kpi-value">${fmt(totalRec)}</div><div class="kpi-sub">acumulado</div></div>
-    <div class="kpi"><div class="kpi-label">Tickets vendidos</div><div class="kpi-value">${totalTix}</div><div class="kpi-sub">${ticketsConCosto} c/costo + ${ticketsSinCargo} s/c</div></div>
+    <div class="kpi">
+      <div class="tix-breakdown">
+        <div class="tix-row"><span class="tix-label tix-main">Total de tickets</span><span class="tix-num tix-main">${totalTix}</span></div>
+        <div class="tix-row"><span class="tix-label tix-sub">Tickets vendidos</span><span class="tix-num tix-sub">${ticketsConCosto}</span></div>
+        <div class="tix-row"><span class="tix-label tix-sub">Tickets S/C</span><span class="tix-num tix-sub">${ticketsSinCargo}</span></div>
+      </div>
+    </div>
     <div class="kpi"><div class="kpi-label">Transacciones</div><div class="kpi-value">${totalTrans}</div><div class="kpi-sub">órdenes</div></div>
     <div class="kpi"><div class="kpi-label">Precio promedio</div><div class="kpi-value">${fmt(ticketPromedio)}</div><div class="kpi-sub">por ticket</div></div>
     <div class="kpi"><div class="kpi-label">Más vendido</div><div class="kpi-value" style="font-size:16px;padding-top:4px;">${masVendido?.nombre||'—'}</div><div class="kpi-sub">${masVendido?.vendidos||0} tickets</div></div>
