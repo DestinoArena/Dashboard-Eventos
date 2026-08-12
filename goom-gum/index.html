@@ -204,6 +204,9 @@ const CONFIG = {
     { col: 9, nombre: 'General Tanda 1',                    key: 'GENERAL TANDA 1',                        precio: 25000 },
     { col: 10, nombre: 'General Tanda 2',                   key: 'GENERAL TANDA 2',                        precio: 30000 },
     { col: 11, nombre: 'General Tanda 3',                   key: 'GENERAL TANDA 3',                        precio: 32000 },
+    { col: 12, nombre: 'Acceso S/Cargo General',            key: 'ACCESO S/CARGO GENERAL',                 precio: 0 },
+    { col: 13, nombre: 'Acceso S/Cargo Backstage',          key: 'ACCESO S/CARGO BACKSTAGE',               precio: 0 },
+    { col: 14, nombre: 'Acceso S/Cargo - VIP Front',        key: 'ACCESO S/CARGO - VIP FRONT',             precio: 0 },
   ],
 };
 
@@ -381,9 +384,12 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
   const ticketPromedio = totalTix > 0 ? totalRec / totalTix : 0;
   const masVendido = Object.values(tipoMap).filter(t => t.vendidos > 0).sort((a,b) => b.vendidos - a.vendidos)[0];
 
+  const ticketsConCosto = Object.values(tipoMap).filter(t => t.precio > 0).reduce((a,t) => a + t.vendidos, 0);
+  const ticketsSinCargo = Object.values(tipoMap).filter(t => t.precio === 0).reduce((a,t) => a + t.vendidos, 0);
+
   document.getElementById('kpi-grid').innerHTML = `
     <div class="kpi accent"><div class="kpi-label">Recaudación total</div><div class="kpi-value">${fmt(totalRec)}</div><div class="kpi-sub">acumulado</div></div>
-    <div class="kpi"><div class="kpi-label">Tickets vendidos</div><div class="kpi-value">${totalTix}</div><div class="kpi-sub">unidades</div></div>
+    <div class="kpi"><div class="kpi-label">Tickets vendidos</div><div class="kpi-value">${totalTix}</div><div class="kpi-sub">${ticketsConCosto} c/costo + ${ticketsSinCargo} s/c</div></div>
     <div class="kpi"><div class="kpi-label">Transacciones</div><div class="kpi-value">${totalTrans}</div><div class="kpi-sub">órdenes</div></div>
     <div class="kpi"><div class="kpi-label">Precio promedio</div><div class="kpi-value">${fmt(ticketPromedio)}</div><div class="kpi-sub">por ticket</div></div>
     <div class="kpi"><div class="kpi-label">Más vendido</div><div class="kpi-value" style="font-size:16px;padding-top:4px;">${masVendido?.nombre||'—'}</div><div class="kpi-sub">${masVendido?.vendidos||0} tickets</div></div>
