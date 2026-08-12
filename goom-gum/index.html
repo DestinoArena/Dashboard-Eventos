@@ -389,11 +389,11 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
     totalTrans++;
   });
 
-  const ticketPromedio = totalTix > 0 ? totalRec / totalTix : 0;
   const masVendido = Object.values(tipoMap).filter(t => t.vendidos > 0).sort((a,b) => b.vendidos - a.vendidos)[0];
 
   const ticketsConCosto = Object.values(tipoMap).filter(t => t.precio > 0).reduce((a,t) => a + t.vendidos, 0);
   const ticketsSinCargo = Object.values(tipoMap).filter(t => t.precio === 0).reduce((a,t) => a + t.vendidos, 0);
+  const ticketPromedio = ticketsConCosto > 0 ? totalRec / ticketsConCosto : 0;
 
   document.getElementById('kpi-grid').innerHTML = `
     <div class="kpi accent"><div class="kpi-label">Recaudación total</div><div class="kpi-value">${fmt(totalRec)}</div><div class="kpi-sub">acumulado</div></div>
