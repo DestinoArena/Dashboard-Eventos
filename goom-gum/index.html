@@ -428,9 +428,10 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
   });
 
   if (chartBarras) chartBarras.destroy();
+  const tiposConCosto = tiposArr.map((t, i) => ({ ...t, color: colores[i] })).filter(t => t.precio > 0);
   chartBarras = new Chart(document.getElementById('chartBarras'), {
     type: 'bar',
-    data: { labels: labels.map(l => l.length > 14 ? l.substring(0,13)+'…' : l), datasets: [{ data: recaudaciones, backgroundColor: colores, borderRadius: 4, borderSkipped: false }] },
+    data: { labels: tiposConCosto.map(t => t.nombre.length > 14 ? t.nombre.substring(0,13)+'…' : t.nombre), datasets: [{ data: tiposConCosto.map(t => t.recaudacion), backgroundColor: tiposConCosto.map(t => t.color), borderRadius: 4, borderSkipped: false }] },
     options: { responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)}` } } },
       scales: { x: { grid: { display: false }, ticks: { color: '#555', font: { size: 10 } } }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 }, callback: v => '$'+(v/1000)+'k' } } } }
