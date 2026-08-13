@@ -351,7 +351,7 @@ function parseFecha(raw) {
   }).join('');
 }
 
-function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios) {
+function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios, montos) {
   const tipoMaxMap = {};
   tipos.forEach(t => {
     const nombre = String(t[0]||'').trim().toUpperCase();
@@ -448,7 +448,8 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
   diarias.forEach(row => {
     if (!row[0]) return;
     dailyLabels.push(fechaStr(row[0], false));
-    dailyPerDay.push(parseFloat(row[1]) || 0);
+    const totalConCostoDia = CONFIG.COL_TICKETS.filter(ct => ct.precio > 0).reduce((a,ct) => a + (parseFloat(row[ct.col]) || 0), 0);
+    dailyPerDay.push(totalConCostoDia);
   });
 
   if (chartLinea) chartLinea.destroy();
@@ -507,9 +508,12 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
   // ── GRÁFICO HORARIO ──
   const franjas = Array(24).fill(0);
 
-  horarios.forEach(row => {
+  horarios.forEach((row, idx) => {
     const raw = (row[0] || '').toString().trim();
     if (!raw) return;
+
+    const monto = parsePesos(montos[idx]?.[0]);
+    if (monto <= 0) return; // excluir transacciones sin cargo
 
     let hora = null;
 
@@ -632,17 +636,18 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
 
 async function loadData() {
   try {
-    const [ventas, diarias, tipos, totalesTix, totalesRec, horarios] = await Promise.all([
+    const [ventas, diarias, tipos, totalesTix, totalesRec, horarios, montos] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:C500"),
       fetchSheet("Ventas Diarias!A4:R80"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
       fetchSheet("Ventas Diarias!B81:B81"),
       fetchSheet("Ventas Diarias!C82:C82"),
       fetchSheet("Dataset Registro Ventas!I2:I500"),
+      fetchSheet("Dataset Registro Ventas!F2:F500"),
     ]);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios);
+    buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios, montos);
   } catch(err) {
     document.getElementById('loading').style.display = 'none';
     const errEl = document.getElementById('error-msg');
