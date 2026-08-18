@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eventos anteriores - Only by Destino Arena</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080808;
+    --text: #f0f0f0;
+    --text2: #888;
+    --text3: #444;
+    --accent: #c8f135;
+    --accent-dim: rgba(200,241,53,0.06);
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.14);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  header {
+    padding: 36px 48px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-title { font-size: 15px; font-weight: 500; letter-spacing: -0.2px; }
+  .back-link { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; text-decoration: none; transition: color 0.2s; }
+  .back-link:hover { color: var(--accent); }
+
+  main {
+    padding: 64px 48px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .page-intro { margin-bottom: 56px; }
+  .page-intro .eyebrow {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+    color: var(--accent); font-family: 'DM Mono', monospace; margin-bottom: 14px;
+  }
+  .page-intro h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 96px);
+    letter-spacing: 2px; line-height: 0.9; color: var(--text);
+  }
+  .page-intro h1 span { color: var(--accent); }
+  .page-intro .sub { margin-top: 18px; font-size: 14px; color: var(--text2); font-weight: 300; }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .event-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s ease, transform 0.4s ease;
+    aspect-ratio: 1 / 1;
+    background: #111;
+  }
+  .event-card:hover { border-color: rgba(200,241,53,0.3); transform: translateY(-6px); }
+  .event-card img.flyer {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 0.6s ease, filter 0.4s ease; filter: brightness(0.7) grayscale(0.3);
+  }
+  .event-card:hover img.flyer { transform: scale(1.04); filter: brightness(0.9) grayscale(0); }
+  .event-card .overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.35) 45%, transparent 70%);
+  }
+  .event-card .info { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px 28px 24px; }
+  .event-card .tag {
+    display: inline-block; font-size: 9px; text-transform: uppercase; letter-spacing: 2px;
+    font-family: 'DM Mono', monospace; color: var(--text2);
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border2);
+    padding: 4px 10px; border-radius: 20px; margin-bottom: 10px;
+  }
+  .event-card .artist {
+    font-family: 'Bebas Neue', sans-serif; font-size: clamp(28px, 4vw, 44px);
+    letter-spacing: 1px; line-height: 1; color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+  }
+  .event-card .date { margin-top: 6px; font-size: 12px; color: rgba(255,255,255,0.6); font-family: 'DM Mono', monospace; }
+  .event-card .cta {
+    margin-top: 14px; display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-family: 'DM Mono', monospace; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--accent);
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--text3); font-size: 11px; font-family: 'DM Mono', monospace;
+  }
+
+  @media (max-width: 700px) {
+    header { padding: 24px 20px 20px; }
+    main { padding: 40px 20px 60px; }
+    .events-grid { grid-template-columns: 1fr; }
+    footer { padding: 16px 20px; flex-direction: column; gap: 6px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">EVENTOS ANTERIORES</div>
+  <a class="back-link" href="./index.html">← Volver</a>
+</header>
+
+<main>
+  <div class="page-intro">
+    <div class="eyebrow">Archivo de dashboards</div>
+    <h1>EVENTOS<br><span>ANTERIORES</span></h1>
+    <p class="sub">Dashboards de eventos que ya pasaron su fecha.</p>
+  </div>
+
+  <div class="events-grid">
+
+    <a class="event-card" href="19-26/index.html">
+      <img class="flyer" src="./images/1926_flyer.jpeg" alt="19:26">
+      <div class="overlay"></div>
+      <div class="info">
+        <span class="tag">Archivo</span>
+        <div class="artist">19:26</div>
+        <div class="date">Sáb 15 Agosto · La Normandina</div>
+        <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
+      </div>
+    </a>
+
+    <a class="event-card" href="hector-couto/index.html">
+      <div class="overlay"></div>
+      <div class="info">
+        <span class="tag">Archivo</span>
+        <div class="artist">HECTOR COUTO</div>
+        <div class="date">Sáb 11 Julio · La Normandina</div>
+        <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
+      </div>
+    </a>
+
+  </div>
+</main>
+
+<footer>
+  <span>Only by Destino Arena · Mar del Plata</span>
+  <span>2026</span>
+</footer>
+
+</body>
+</html>
