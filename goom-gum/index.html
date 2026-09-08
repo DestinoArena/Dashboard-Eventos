@@ -53,6 +53,10 @@
   .charts-row { display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px; }
   .chart-card { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px; }
   .card-title { font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:16px; }
+  .period-toggle { display:flex; gap:4px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:3px; }
+  .period-btn { font-family:'DM Mono',monospace; font-size:11px; color:var(--text2); background:transparent; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; transition:background .2s ease,color .2s ease; }
+  .period-btn:hover { color:var(--text); }
+  .period-btn.active { background:var(--accent); color:#0a0a0a; font-weight:600; }
   .chart-wrap { position:relative;width:100%; }
   .legend { display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px; }
   .legend-item { display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2); }
@@ -132,7 +136,14 @@
       </div>
     </div>
     <div class="chart-card" style="margin-bottom:12px;">
-      <div class="card-title">Progresión de ventas por fecha</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div class="card-title" style="margin-bottom:0;">Progresión de ventas por fecha</div>
+        <div class="period-toggle" id="period-toggle">
+          <button class="period-btn active" data-period="day">Diario</button>
+          <button class="period-btn" data-period="week">Semanal</button>
+          <button class="period-btn" data-period="month">Mensual</button>
+        </div>
+      </div>
       <div class="chart-wrap" style="height:220px;"><canvas id="chartLinea"></canvas></div>
     </div>
     <div class="chart-card" style="margin-bottom:12px;">
@@ -209,9 +220,9 @@ const CONFIG = {
     { col: 6, nombre: 'Early Pass (hasta 00:45 hs)',        key: 'EARLY PASS (INGRESO HASTA 00:45 HS)',    precio: 10000 },
     { col: 7, nombre: 'Early Pass 1 (hasta 00:45 hs)',      key: 'EARLY PASS 1 (INGRESO HASTA 00:45 HS)',  precio: 13000 },
     { col: 8, nombre: 'Early Pass 2 (hasta 00:45 hs)',      key: 'EARLY PASS 2 (INGRESO HASTA 00:45 HS)',  precio: 15000 },
-    { col: 9, nombre: 'Early Pass 3 (hasta 01:00 hs)',      key: 'EARLY PASS 3 (INGRESO HASTA 01:00 HS)',  precio: 18000 },
-    { col: 10, nombre: 'General Tanda 1',                    key: 'GENERAL TANDA 1',                        precio: 23000 },
-    { col: 11, nombre: 'General Tanda 2',                   key: 'GENERAL TANDA 2',                        precio: 25000 },
+    { col: 9, nombre: 'Early Pass 3 (hasta 01:00 hs)',      key: 'EARLY PASS 3 (INGRESO HASTA 01:00 HS)',  precio: 19000 },
+    { col: 10, nombre: 'General Tanda 1',                   key: 'GENERAL TANDA 1',                        precio: 25000 },
+    { col: 11, nombre: 'General Tanda 2',                   key: 'GENERAL TANDA 2',                        precio: 30000 },
     { col: 12, nombre: 'General Tanda 3',                   key: 'GENERAL TANDA 3',                        precio: 32000 },
     { col: 13, nombre: 'Acceso S/Cargo General',            key: 'ACCESO S/CARGO GENERAL',                 precio: 0 },
     { col: 14, nombre: 'Acceso S/Cargo Backstage',          key: 'ACCESO S/CARGO BACKSTAGE',               precio: 0 },
@@ -448,22 +459,78 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
     </div>`;
   }).join('');
 
-  const dailyLabels = [], dailyPerDay = [];
+  const dailyRaw = [];
   diarias.forEach(row => {
     if (!row[0]) return;
-    dailyLabels.push(fechaStr(row[0], false));
+    const fecha = parseFecha(row[0]);
+    if (!fecha) return;
     const totalConCostoDia = CONFIG.COL_TICKETS.filter(ct => ct.precio > 0).reduce((a,ct) => a + (parseFloat(row[ct.col]) || 0), 0);
-    dailyPerDay.push(totalConCostoDia);
+    dailyRaw.push({ fecha, valor: totalConCostoDia });
   });
+  window.__dailyRaw = dailyRaw;
 
-  if (chartLinea) chartLinea.destroy();
-  chartLinea = new Chart(document.getElementById('chartLinea'), {
-    type: 'bar',
-    data: { labels: dailyLabels, datasets: [{ label: 'Tickets vendidos', data: dailyPerDay, backgroundColor: '#c8f135', borderRadius: 4, borderSkipped: false }] },
-    options: { responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} tickets` } } },
-      scales: { x: { grid: { display: false }, ticks: { color: '#555', font: { size: 11 }, maxRotation: 45, autoSkip: false }, offset: true }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 11 } }, min: 0 } } }
-  });
+  renderChartLinea('day');
+
+  const toggleEl = document.getElementById('period-toggle');
+  if (toggleEl && !toggleEl.dataset.bound) {
+    toggleEl.dataset.bound = '1';
+    toggleEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.period-btn');
+      if (!btn) return;
+      toggleEl.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderChartLinea(btn.dataset.period);
+    });
+  }
+
+  function getWeekLabel(d) {
+    const start = new Date(d);
+    const day = start.getDay();
+    const diffToMonday = (day === 0 ? -6 : 1) - day;
+    start.setDate(start.getDate() + diffToMonday);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    const fmt = dt => dt.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit' });
+    return `${fmt(start)}–${fmt(end)}`;
+  }
+
+  function getMonthLabel(d) {
+    return d.toLocaleDateString('es-AR', { month:'short', year:'2-digit' }).replace('.', '');
+  }
+
+  function renderChartLinea(period) {
+    const raw = window.__dailyRaw || [];
+    let labels = [], values = [];
+
+    if (period === 'day') {
+      labels = raw.map(r => r.fecha.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit' }));
+      values = raw.map(r => r.valor);
+    } else {
+      const groupFn = period === 'week' ? getWeekLabel : getMonthLabel;
+      const sortKeyFn = period === 'week'
+        ? (d) => { const s = new Date(d); const day = s.getDay(); s.setDate(s.getDate() + ((day===0?-6:1)-day)); return s.getTime(); }
+        : (d) => new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+      const groups = new Map();
+      raw.forEach(r => {
+        const key = groupFn(r.fecha);
+        const sortKey = sortKeyFn(r.fecha);
+        if (!groups.has(key)) groups.set(key, { total: 0, sortKey });
+        groups.get(key).total += r.valor;
+      });
+      const sorted = Array.from(groups.entries()).sort((a,b) => a[1].sortKey - b[1].sortKey);
+      labels = sorted.map(([k]) => k);
+      values = sorted.map(([,v]) => v.total);
+    }
+
+    if (chartLinea) chartLinea.destroy();
+    chartLinea = new Chart(document.getElementById('chartLinea'), {
+      type: 'bar',
+      data: { labels, datasets: [{ label: 'Tickets vendidos', data: values, backgroundColor: '#c8f135', borderRadius: 4, borderSkipped: false }] },
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} tickets` } } },
+        scales: { x: { grid: { display: false }, ticks: { color: '#555', font: { size: 11 }, maxRotation: 45, autoSkip: false }, offset: true }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 11 } }, min: 0 } } }
+    });
+  }
 
   document.getElementById('tabla-body').innerHTML = tiposArr.map((t, i) => {
     const pct = totalRec > 0 ? Math.round((t.recaudacion / totalRec) * 100) : 0;
