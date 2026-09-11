@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Dashboard — LOCO DICE · Only by Destino Arena</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #0a0a0a; --bg2: #111111; --bg3: #1a1a1a;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+    --text: #f0f0f0; --text2: #888; --text3: #555;
+    --accent: #c8f135; --accent-dim: rgba(200,241,53,0.08);
+    --red: #ff4d4d; --blue: #4d9fff; --amber: #ffb84d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-height: 100vh; }
+  header { border-bottom: 1px solid var(--border); padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: rgba(10,10,10,0.95); backdrop-filter: blur(12px); z-index: 100; }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 8px var(--accent)} 50%{opacity:.5;box-shadow:0 0 4px var(--accent)} }
+  .header-title { font-size: 15px; font-weight: 500; letter-spacing: -0.2px; }
+  .header-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .back-link { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; text-decoration: none; transition: color 0.2s; }
+  .back-link:hover { color: var(--accent); }
+  .live-badge { display:flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(200,241,53,0.2);color:var(--accent);font-size:11px;font-family:'DM Mono',monospace;padding:5px 12px;border-radius:20px;letter-spacing:.5px; }
+  .live-dot { width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite; }
+  .last-update { font-size:11px;color:var(--text3);font-family:'DM Mono',monospace; }
+  main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+  #loading { display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:16px;color:var(--text2); }
+  .spinner { width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  #error-msg { display:none;background:rgba(255,77,77,0.08);border:1px solid rgba(255,77,77,0.2);color:var(--red);padding:16px 20px;border-radius:8px;font-family:'DM Mono',monospace;font-size:12px;margin-bottom:24px; }
+  #dashboard { display:none; }
+  .kpi-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px; }
+  .kpi { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;transition:border-color .2s; }
+  .kpi:hover { border-color:var(--border2); }
+  .kpi.accent { border-color:rgba(200,241,53,0.2);background:var(--accent-dim); }
+  .kpi-label { font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px; }
+  .kpi-value { font-size:26px;font-weight:600;letter-spacing:-1px;color:var(--text);line-height:1; }
+  .kpi.accent .kpi-value { color:var(--accent); }
+  .kpi-sub { font-size:11px;color:var(--text3);margin-top:6px;font-family:'DM Mono',monospace; }
+  .tix-breakdown { display:flex; flex-direction:column; gap:6px; }
+  .tix-row { display:flex; align-items:center; gap:8px; }
+  .tix-label { font-size:11px; text-transform:uppercase; letter-spacing:.8px; font-family:'DM Mono',monospace; }
+  .tix-label.tix-main { color:var(--accent); font-size:14px; font-weight:700; }
+  .tix-label.tix-sub { color:var(--text2); }
+  .tix-num { font-family:'DM Mono',monospace; color:var(--text); font-weight:600; }
+  .tix-num.tix-main { font-size:30px; font-weight:700; }
+  .tix-num.tix-sub { font-size:18px; }
+  .charts-row { display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px; }
+  .chart-card { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px; }
+  .card-title { font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:16px; }
+  .period-toggle { display:flex; gap:4px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:3px; }
+  .period-btn { font-family:'DM Mono',monospace; font-size:11px; color:var(--text2); background:transparent; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; transition:background .2s ease,color .2s ease; }
+  .period-btn:hover { color:var(--text); }
+  .period-btn.active { background:var(--accent); color:#0a0a0a; font-weight:600; }
+  .chart-wrap { position:relative;width:100%; }
+  .legend { display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px; }
+  .legend-item { display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2); }
+  .legend-dot { width:8px;height:8px;border-radius:2px;flex-shrink:0; }
+  .table-wrap { overflow-x:auto; }
+  table { width:100%;border-collapse:collapse; }
+  thead th { font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;font-weight:400; }
+  tbody td { padding:12px 12px;border-bottom:1px solid var(--border);color:var(--text);font-size:13px; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover td { background:rgba(255,255,255,0.02); }
+  .total-row td { font-weight:600;color:var(--accent);border-top:1px solid var(--border2);border-bottom:none; }
+  .badge { display:inline-block;font-size:10px;padding:3px 8px;border-radius:20px;font-family:'DM Mono',monospace;letter-spacing:.3px; }
+  .badge-green { background:rgba(200,241,53,0.1);color:var(--accent);border:1px solid rgba(200,241,53,0.2); }
+  .badge-red { background:rgba(255,77,77,0.1);color:var(--red);border:1px solid rgba(255,77,77,0.2); }
+  .badge-blue { background:rgba(77,159,255,0.1);color:var(--blue);border:1px solid rgba(77,159,255,0.2); }
+  .badge-amber { background:rgba(255,184,77,0.1);color:var(--amber);border:1px solid rgba(255,184,77,0.2); }
+  .progress-bar-bg { background:var(--bg3);border-radius:4px;height:4px;overflow:hidden; }
+  .progress-bar-fill { height:100%;border-radius:4px;background:var(--accent);transition:width .8s ease; }
+  .progress-label { display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px;font-family:'DM Mono',monospace; }
+  .metodo-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .metodo-block { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:16px; }
+  .metodo-block .m-label { font-size:11px; text-transform:uppercase; letter-spacing:.8px; color:var(--text2); margin-bottom:8px; }
+  .metodo-block .m-tix { font-size:24px; font-weight:700; font-family:'DM Mono',monospace; color:var(--text); }
+  .metodo-block .m-rec { font-size:13px; color:var(--text2); margin-top:4px; font-family:'DM Mono',monospace; }
+  .metodo-block.bp { border-color:rgba(200,241,53,0.25); background:var(--accent-dim); }
+  .metodo-block.bp .m-tix { color:var(--accent); }
+  .metodo-bar-bg { background:var(--bg3);border-radius:4px;height:8px;overflow:hidden;margin-top:14px;display:flex; }
+  .metodo-bar-std { background:#4d9fff; height:100%; }
+  .metodo-bar-bp { background:var(--accent); height:100%; }
+  .detalle-fecha-table { font-size:13px; }
+  .detalle-fecha-table thead th { white-space: nowrap; text-align:right; }
+  .detalle-fecha-table thead th:first-child,
+  .detalle-fecha-table thead th:nth-child(2) { text-align:left; }
+  .row-fecha td { padding: 16px 12px 6px; font-weight:600; font-size:13px; color: var(--text); border-bottom: none; border-top: 1px solid var(--border2); }
+  .row-fecha:first-child td { border-top: none; }
+  .row-detalle td { padding: 8px 12px; border-bottom: none; color: var(--text2); }
+  .row-total td { padding: 8px 12px 14px; font-weight:600; color: var(--text); border-bottom: 1px solid var(--border); font-family:'DM Mono',monospace; }
+  .grand-total td { font-weight:700; color: var(--accent); border-top: 2px solid rgba(200,241,53,0.3); font-size:13px; font-family:'DM Mono',monospace; background: var(--accent-dim); padding: 14px 12px; }
+  .pendiente-note { font-size:11px; color:var(--text3); font-family:'DM Mono',monospace; margin-top:10px; }
+  footer { border-top:1px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;color:var(--text3);font-size:11px;font-family:'DM Mono',monospace; }
+  @media(max-width:900px){
+    main{padding:16px} .kpi-grid{grid-template-columns:repeat(2,1fr)}
+    .charts-row,.metodo-row{grid-template-columns:1fr} header{padding:16px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="logo-dot"></div>
+    <div>
+      <div class="header-title" id="header-title">LOCO DICE — Only by Destino Arena</div>
+      <div class="header-sub">Dashboard de ventas en tiempo real</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <a class="back-link" href="../index.html">← Volver</a>
+    <span class="last-update" id="last-update">—</span>
+    <span class="live-badge"><span class="live-dot"></span>EN VIVO</span>
+  </div>
+</header>
+<main>
+  <div id="loading"><div class="spinner"></div><span>Conectando con Google Sheets...</span></div>
+  <div id="error-msg"></div>
+  <div id="dashboard">
+    <div class="kpi-grid" id="kpi-grid"></div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="card-title">Tickets vendidos por tipo</div>
+        <div class="legend" id="legend-dona"></div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="chartDona"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="card-title">Recaudación por tipo ($)</div>
+        <div class="chart-wrap" style="height:232px;"><canvas id="chartBarras"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="card-title">Ocupación por tipo</div>
+        <div id="progress-section"></div>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:12px;">
+      <div class="card-title">Ventas por método de pago</div>
+      <div id="metodo-pago"></div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div class="card-title" style="margin-bottom:0;">Progresión de ventas por fecha</div>
+        <div class="period-toggle" id="period-toggle">
+          <button class="period-btn active" data-period="day">Diario</button>
+          <button class="period-btn" data-period="week">Semanal</button>
+          <button class="period-btn" data-period="month">Mensual</button>
+        </div>
+      </div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="chartLinea"></canvas></div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:12px;">
+      <div class="card-title">Detalle por tipo de ticket</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tipo</th><th>Precio unitario</th><th>Vendidos</th><th>Cap. máx.</th><th>Recaudación</th><th>% del total</th><th>Estado</th></tr></thead>
+          <tbody id="tabla-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:12px;">
+      <div class="card-title">Transacciones por franja horaria</div>
+      <div id="pico-horario" style="font-size:12px;color:var(--accent);margin:-6px 0 14px;font-family:'DM Mono',monospace;"></div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="chartHorario"></canvas></div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:12px;">
+      <div class="card-title">Distribución geográfica</div>
+      <div class="pendiente-note">Pendiente — falta cargar mail / teléfono en el registro de ventas. Se agrega cuando esos datos estén disponibles.</div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:12px;">
+      <div class="card-title">Detalle de ventas por fecha</div>
+      <div class="table-wrap">
+        <table class="detalle-fecha-table">
+          <thead>
+            <tr>
+              <th style="width:140px;">Fecha</th>
+              <th>Tipo</th>
+              <th style="width:120px;text-align:right;">Valor</th>
+              <th style="width:100px;text-align:right;">Cantidad</th>
+              <th style="width:160px;text-align:right;">Recaudación</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-detalle-fecha"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+<footer>
+  <span>Destino Arena · Sistema de ventas</span>
+  <span id="footer-count">—</span>
+</footer>
+<script>
+const CONFIG = {
+  ARTISTA: 'LOCO DICE',
+  VENUE: 'Only by Destino Arena',
+  API_KEY: 'AIzaSyAuJlNbip2fWReTMHqhOcuuJcN2V32YsA0',
+  SHEET_ID: '11iIsX20iUXnWA_yQXioNnVhK76azWRnBBAAhZrVCa_Q',
+  REFRESH_SEG: 60,
+};
+
+const SHEET_ID   = CONFIG.SHEET_ID;
+const REFRESH_MS = CONFIG.REFRESH_SEG * 1000;
+const COLORS     = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4','#f135c8','#35c8f1'];
+
+let chartDona, chartBarras, chartLinea, chartHorario;
+
+async function fetchSheet(range) {
+  const parts = range.split('!');
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(parts[0])}!${parts[1]||''}?key=${CONFIG.API_KEY}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+  return (await res.json()).values || [];
+}
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-AR'); }
+
+function parsePesos(v) {
+  return parseFloat(String(v||'0').replace(/\$/g,'').replace(/\./g,'').replace(',','.').trim()) || 0;
+}
+
+function parseFecha(raw) {
+  if (!raw) return null;
+  const s = String(raw).trim();
+  // ISO YYYY-MM-DD (formato de la columna "Fecha" del registro)
+  const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) return new Date(+iso[1], +iso[2] - 1, +iso[3]);
+  // Fecha serial de Excel/Sheets
+  const num = parseFloat(raw);
+  if (!isNaN(num) && num > 40000 && s.indexOf('/') === -1 && s.indexOf('-') === -1) {
+    return new Date((num - 25569) * 86400 * 1000);
+  }
+  // DD/MM/YYYY
+  const parts = s.split('/');
+  if (parts.length === 3) {
+    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+  }
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
+}
+
+function fechaStr(raw, incluirAnio) {
+  const d = parseFecha(raw);
+  if (!d) return String(raw || '').substring(0,10);
+  const opts = incluirAnio
+    ? { day:'2-digit', month:'2-digit', year:'numeric' }
+    : { day:'2-digit', month:'2-digit' };
+  return d.toLocaleDateString('es-AR', opts);
+}
+
+// Detecta banco y tipo base a partir del texto de "Detalle"
+// ej: "2x 01 Ene | 00:45 | Banco Provincia | Campo General Early Bird — 4 CUOTAS SIN INTERÉS"
+function detectTipo(detalle) {
+  const d = String(detalle || '').toUpperCase();
+  const esBP = d.includes('BANCO PROVINCIA');
+  let base = null;
+  if (d.includes('VIP STANDING')) base = 'VIP STANDING - TANDA 1';
+  else if (d.includes('EARLY BIRD')) base = 'EARLY BIRD GENERAL';
+  else if (d.includes('TANDA 3')) base = 'GENERAL TANDA 3';
+  else if (d.includes('TANDA 2')) base = 'GENERAL TANDA 2';
+  else if (d.includes('TANDA 1')) base = 'GENERAL TANDA 1';
+  if (!base) return null;
+  return esBP ? base + ' - BP' : base;
+}
+
+function buildDashboard(tipos, ventas) {
+  // ── Mapa de tipos (nombre canónico -> precio, cap. máx.) desde "Dataset Tipos De Tickets" ──
+  const tipoMap = {};
+  const ordenTipos = [];
+  tipos.forEach(row => {
+    const nombre = String(row[0] || '').trim().toUpperCase();
+    if (!nombre || nombre === 'TOTAL') return;
+    tipoMap[nombre] = {
+      nombre: row[0].trim(),
+      precio: parsePesos(row[1]),
+      max: parseFloat(row[2]) || 999,
+      vendidos: 0,
+      recaudacion: 0,
+    };
+    ordenTipos.push(nombre);
+  });
+
+  let totalTrans = 0, totalTix = 0, totalRec = 0;
+  let stdTix = 0, stdRec = 0, bpTix = 0, bpRec = 0;
+  const dailyMap = {};      // fecha -> cantidad
+  const dateDetail = {};    // fecha -> { tipoKey: {qty, monto} }
+  const franjas = Array(24).fill(0);
+
+  ventas.forEach(row => {
+    const detalle = row[0];
+    if (!detalle) return;
+    totalTrans++;
+
+    const monto = parsePesos(row[1]);
+    const qty = parseFloat(row[2]) || 0;
+    const fecha = row[4];
+    const hora = row[5];
+
+    totalTix += qty;
+    totalRec += monto;
+
+    const esBP = String(detalle).toUpperCase().includes('BANCO PROVINCIA');
+    if (esBP) { bpTix += qty; bpRec += monto; } else { stdTix += qty; stdRec += monto; }
+
+    const key = detectTipo(detalle);
+    if (key && tipoMap[key]) {
+      tipoMap[key].vendidos += qty;
+      tipoMap[key].recaudacion += monto;
+    }
+
+    if (fecha) {
+      dailyMap[fecha] = (dailyMap[fecha] || 0) + qty;
+      if (!dateDetail[fecha]) dateDetail[fecha] = {};
+      if (key) {
+        if (!dateDetail[fecha][key]) dateDetail[fecha][key] = { qty: 0, monto: 0 };
+        dateDetail[fecha][key].qty += qty;
+        dateDetail[fecha][key].monto += monto;
+      }
+    }
+
+    if (hora) {
+      const h = parseInt(String(hora).split(':')[0]);
+      if (!isNaN(h) && h >= 0 && h < 24) franjas[h]++;
+    }
+  });
+
+  const masVendido = Object.values(tipoMap).filter(t => t.vendidos > 0).sort((a,b) => b.vendidos - a.vendidos)[0];
+  const ticketPromedio = totalTix > 0 ? totalRec / totalTix : 0;
+
+  // ── KPIs ──
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi accent"><div class="kpi-label">Recaudación total</div><div class="kpi-value">${fmt(totalRec)}</div><div class="kpi-sub">acumulado</div></div>
+    <div class="kpi">
+      <div class="tix-breakdown">
+        <div class="tix-row"><span class="tix-label tix-main">Total de tickets</span><span class="tix-num tix-main">${totalTix}</span></div>
+        <div class="tix-row"><span class="tix-label tix-sub">Todos los Bancos</span><span class="tix-num tix-sub">${stdTix}</span></div>
+        <div class="tix-row"><span class="tix-label tix-sub">Banco Provincia</span><span class="tix-num tix-sub">${bpTix}</span></div>
+      </div>
+    </div>
+    <div class="kpi"><div class="kpi-label">Transacciones</div><div class="kpi-value">${totalTrans}</div><div class="kpi-sub">órdenes</div></div>
+    <div class="kpi"><div class="kpi-label">Precio promedio</div><div class="kpi-value">${fmt(ticketPromedio)}</div><div class="kpi-sub">por ticket</div></div>
+    <div class="kpi"><div class="kpi-label">Más vendido</div><div class="kpi-value" style="font-size:16px;padding-top:4px;">${masVendido?.nombre||'—'}</div><div class="kpi-sub">${masVendido?.vendidos||0} tickets</div></div>
+  `;
+
+  // ── Dona + Barras ──
+  const tiposArr = ordenTipos.map(k => tipoMap[k]).filter(t => t.vendidos > 0).sort((a,b) => b.vendidos - a.vendidos);
+  const labels = tiposArr.map(t => t.nombre);
+  const cantidades = tiposArr.map(t => t.vendidos);
+  const colores = tiposArr.map((_, i) => COLORS[i % COLORS.length]);
+
+  document.getElementById('legend-dona').innerHTML = tiposArr.map((t,i) =>
+    `<span class="legend-item"><span class="legend-dot" style="background:${colores[i]}"></span>${t.nombre} (${t.vendidos})</span>`
+  ).join('');
+
+  if (chartDona) chartDona.destroy();
+  chartDona = new Chart(document.getElementById('chartDona'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: cantidades, backgroundColor: colores, borderWidth: 2, borderColor: '#111' }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '65%',
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} tickets` } } } }
+  });
+
+  if (chartBarras) chartBarras.destroy();
+  chartBarras = new Chart(document.getElementById('chartBarras'), {
+    type: 'bar',
+    data: { labels: tiposArr.map(t => t.nombre.length > 14 ? t.nombre.substring(0,13)+'…' : t.nombre), datasets: [{ data: tiposArr.map(t => t.recaudacion), backgroundColor: colores, borderRadius: 4, borderSkipped: false }] },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)}` } } },
+      scales: { x: { grid: { display: false }, ticks: { color: '#555', font: { size: 10 } } }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 }, callback: v => '$'+(v/1000)+'k' } } } }
+  });
+
+  // ── Ocupación por tipo ──
+  document.getElementById('progress-section').innerHTML = ordenTipos.map(k => tipoMap[k]).filter(t => t.vendidos > 0)
+    .sort((a, b) => (a.vendidos >= a.max ? 1 : 0) - (b.vendidos >= b.max ? 1 : 0))
+    .map(t => {
+    const pct = Math.min(100, Math.round((t.vendidos / t.max) * 100));
+    return `<div style="margin-bottom:14px;">
+      <div class="progress-label"><span>${t.nombre}</span><span>${t.vendidos}/${t.max}</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${pct>=90?'#ff4d4d':pct>=60?'#ffb84d':'#c8f135'}"></div></div>
+    </div>`;
+  }).join('');
+
+  // ── Ventas por método de pago ──
+  const pctBP = totalTix > 0 ? Math.round((bpTix / totalTix) * 100) : 0;
+  const pctSTD = 100 - pctBP;
+  document.getElementById('metodo-pago').innerHTML = `
+    <div class="metodo-row">
+      <div class="metodo-block">
+        <div class="m-label">Todos los Bancos</div>
+        <div class="m-tix">${stdTix} tickets</div>
+        <div class="m-rec">${fmt(stdRec)} · ${pctSTD}%</div>
+      </div>
+      <div class="metodo-block bp">
+        <div class="m-label">Banco Provincia — 4 cuotas sin interés</div>
+        <div class="m-tix">${bpTix} tickets</div>
+        <div class="m-rec">${fmt(bpRec)} · ${pctBP}%</div>
+      </div>
+    </div>
+    <div class="metodo-bar-bg">
+      <div class="metodo-bar-std" style="width:${pctSTD}%"></div>
+      <div class="metodo-bar-bp" style="width:${pctBP}%"></div>
+    </div>
+  `;
+
+  // ── Progresión por fecha ──
+  const dailyRaw = Object.entries(dailyMap)
+    .map(([f, v]) => ({ fecha: parseFecha(f), valor: v }))
+    .filter(x => x.fecha)
+    .sort((a,b) => a.fecha - b.fecha);
+  window.__dailyRaw = dailyRaw;
+  renderChartLinea('day');
+
+  const toggleEl = document.getElementById('period-toggle');
+  if (toggleEl && !toggleEl.dataset.bound) {
+    toggleEl.dataset.bound = '1';
+    toggleEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.period-btn');
+      if (!btn) return;
+      toggleEl.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderChartLinea(btn.dataset.period);
+    });
+  }
+
+  function getWeekLabel(d) {
+    const start = new Date(d);
+    const day = start.getDay();
+    const diffToMonday = (day === 0 ? -6 : 1) - day;
+    start.setDate(start.getDate() + diffToMonday);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    const fmt2 = dt => dt.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit' });
+    return `${fmt2(start)}–${fmt2(end)}`;
+  }
+
+  function getMonthLabel(d) {
+    return d.toLocaleDateString('es-AR', { month:'short', year:'2-digit' }).replace('.', '');
+  }
+
+  function renderChartLinea(period) {
+    const raw = window.__dailyRaw || [];
+    let labels2 = [], values = [];
+
+    if (period === 'day') {
+      labels2 = raw.map(r => r.fecha.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit' }));
+      values = raw.map(r => r.valor);
+    } else {
+      const groupFn = period === 'week' ? getWeekLabel : getMonthLabel;
+      const sortKeyFn = period === 'week'
+        ? (d) => { const s = new Date(d); const day = s.getDay(); s.setDate(s.getDate() + ((day===0?-6:1)-day)); return s.getTime(); }
+        : (d) => new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+      const groups = new Map();
+      raw.forEach(r => {
+        const key = groupFn(r.fecha);
+        const sortKey = sortKeyFn(r.fecha);
+        if (!groups.has(key)) groups.set(key, { total: 0, sortKey });
+        groups.get(key).total += r.valor;
+      });
+      const sorted = Array.from(groups.entries()).sort((a,b) => a[1].sortKey - b[1].sortKey);
+      labels2 = sorted.map(([k]) => k);
+      values = sorted.map(([,v]) => v.total);
+    }
+
+    if (chartLinea) chartLinea.destroy();
+    chartLinea = new Chart(document.getElementById('chartLinea'), {
+      type: 'bar',
+      data: { labels: labels2, datasets: [{ label: 'Tickets vendidos', data: values, backgroundColor: '#c8f135', borderRadius: 4, borderSkipped: false }] },
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} tickets` } } },
+        scales: { x: { grid: { display: false }, ticks: { color: '#555', font: { size: 11 }, maxRotation: 45, autoSkip: false }, offset: true }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 11 } }, min: 0 } } }
+    });
+  }
+
+  // ── Tabla detalle por tipo ──
+  document.getElementById('tabla-body').innerHTML = tiposArr.map((t, i) => {
+    const pct = totalRec > 0 ? Math.round((t.recaudacion / totalRec) * 100) : 0;
+    const agotado = t.vendidos >= t.max;
+    const badge = agotado ? '<span class="badge badge-red">Agotado</span>' : '<span class="badge badge-green">Activo</span>';
+    return `<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${colores[i]};margin-right:8px;"></span>${t.nombre}</td>
+      <td style="font-family:'DM Mono',monospace;">${fmt(t.precio)}</td>
+      <td style="font-family:'DM Mono',monospace;">${t.vendidos}</td>
+      <td style="font-family:'DM Mono',monospace;color:#555;">${t.max}</td>
+      <td style="font-family:'DM Mono',monospace;">${fmt(t.recaudacion)}</td>
+      <td style="font-family:'DM Mono',monospace;color:#888;">${pct}%</td>
+      <td>${badge}</td>
+    </tr>`;
+  }).join('') + `<tr class="total-row"><td>Total</td><td>—</td><td>${totalTix}</td><td>—</td><td>${fmt(totalRec)}</td><td>100%</td><td>—</td></tr>`;
+
+  // ── Gráfico horario ──
+  const horaLabels = Array.from({length: 24}, (_, i) => `${String(i).padStart(2,'0')}:00`);
+  const maxFranja = Math.max(...franjas);
+  const horaColors = franjas.map(v => {
+    const ratio = maxFranja > 0 ? v / maxFranja : 0;
+    return ratio > 0.7 ? '#c8f135' : ratio > 0.4 ? '#4d9fff' : '#2a2a2a';
+  });
+
+  const picoEl = document.getElementById('pico-horario');
+  if (maxFranja > 0) {
+    const picoIdx = franjas.indexOf(maxFranja);
+    const picoFin = String((picoIdx + 1) % 24).padStart(2, '0');
+    picoEl.textContent = `▲ Franja pico: ${horaLabels[picoIdx]} – ${picoFin}:00 · ${maxFranja} transacciones`;
+  } else {
+    picoEl.textContent = '';
+  }
+
+  if (chartHorario) chartHorario.destroy();
+  chartHorario = new Chart(document.getElementById('chartHorario'), {
+    type: 'bar',
+    data: { labels: horaLabels, datasets: [{ label: 'Transacciones', data: franjas, backgroundColor: horaColors, borderRadius: 3, borderSkipped: false }] },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} transacciones` } } },
+      scales: { x: { grid: { display: false }, ticks: { color: '#555', font: { size: 10 }, maxRotation: 0 } }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 } }, min: 0 } } }
+  });
+
+  // ── Tabla detalle por fecha ──
+  const tablaDetalle = document.getElementById('tabla-detalle-fecha');
+  let htmlDetalle = '';
+
+  const fechasOrdenadas = Object.keys(dateDetail).sort((a,b) => (parseFecha(a) || 0) - (parseFecha(b) || 0));
+  fechasOrdenadas.forEach(fecha => {
+    const entradas = dateDetail[fecha];
+    let totalDia = 0, recDia = 0;
+    htmlDetalle += `<tr class="row-fecha"><td colspan="5">${fechaStr(fecha, true)}</td></tr>`;
+    Object.keys(entradas).forEach(key => {
+      const info = entradas[key];
+      const t = tipoMap[key];
+      if (!t || !info.qty) return;
+      totalDia += info.qty;
+      recDia += info.monto;
+      htmlDetalle += `<tr class="row-detalle">
+        <td></td>
+        <td>${t.nombre}</td>
+        <td style="font-family:'DM Mono',monospace;text-align:right;">${fmt(t.precio)}</td>
+        <td style="font-family:'DM Mono',monospace;text-align:right;">${info.qty}</td>
+        <td style="font-family:'DM Mono',monospace;text-align:right;">${fmt(info.monto)}</td>
+      </tr>`;
+    });
+    htmlDetalle += `<tr class="row-total">
+      <td></td><td></td>
+      <td style="text-align:right;text-transform:uppercase;letter-spacing:.8px;font-size:11px;color:var(--text3);">Total</td>
+      <td style="font-family:'DM Mono',monospace;text-align:right;">${totalDia}</td>
+      <td style="font-family:'DM Mono',monospace;text-align:right;">${fmt(recDia)}</td>
+    </tr>`;
+  });
+
+  htmlDetalle += `<tr class="grand-total">
+    <td colspan="3" style="text-align:left;letter-spacing:1px;font-size:11px;text-transform:uppercase;">Total general</td>
+    <td style="text-align:right;">${totalTix}</td>
+    <td style="text-align:right;">${fmt(totalRec)}</td>
+  </tr>`;
+
+  tablaDetalle.innerHTML = htmlDetalle;
+
+  document.getElementById('footer-count').textContent = `${totalTrans} transacciones · ${totalTix} tickets · ${fmt(totalRec)}`;
+  document.getElementById('last-update').textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+}
+
+async function loadData() {
+  try {
+    const [tipos, ventas] = await Promise.all([
+      fetchSheet("Dataset Tipos De Tickets!B2:D14"),
+      fetchSheet("Dataset Registro Ventas!E2:J2000"),
+    ]);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    buildDashboard(tipos, ventas);
+  } catch(err) {
+    document.getElementById('loading').style.display = 'none';
+    const errEl = document.getElementById('error-msg');
+    errEl.style.display = 'block';
+    errEl.textContent = `Error al cargar datos: ${err.message}`;
+    console.error(err);
+  }
+}
+
+document.getElementById('header-title').textContent = CONFIG.ARTISTA + ' — ' + CONFIG.VENUE;
+document.getElementById('page-title').textContent = 'Dashboard — ' + CONFIG.ARTISTA + ' · ' + CONFIG.VENUE;
+
+loadData();
+setInterval(loadData, REFRESH_MS);
+</script>
+</body>
+</html>
