@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="page-title">Dashboard — YUBIIK · Only by Destino Arena</title>
+<title id="page-title">Dashboard — YUBIK · Only by Destino Arena</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -105,7 +105,7 @@
   <div class="header-left">
     <div class="logo-dot"></div>
     <div>
-      <div class="header-title" id="header-title">YUBIIK — Only by Destino Arena</div>
+      <div class="header-title" id="header-title">YUBIK — Only by Destino Arena</div>
       <div class="header-sub">Dashboard de ventas en tiempo real</div>
     </div>
   </div>
@@ -210,7 +210,7 @@
 </footer>
 <script>
 const CONFIG = {
-  ARTISTA: 'YUBIIK',
+  ARTISTA: 'YUBIK',
   VENUE: 'Only by Destino Arena',
   API_KEY: 'AIzaSyAuJlNbip2fWReTMHqhOcuuJcN2V32YsA0',
   SHEET_ID: '1ML1dTr_QqLm2_Vlp7K3rO4KOmSoWWIRx3SlDXZPfVZI',
@@ -228,14 +228,15 @@ const CONFIG = {
     { col: 7, nombre: 'Early Pass 1 (hasta 00:45 hs)',      key: 'EARLY PASS 1 (INGRESO HASTA 00:45 HS)',  precio: 13000 },
     { col: 8, nombre: 'Early Pass 2 (hasta 00:45 hs)',      key: 'EARLY PASS 2 (INGRESO HASTA 00:45 HS)',  precio: 15000 },
     { col: 9, nombre: 'Early Pass 3 (hasta 01:00 hs)',      key: 'EARLY PASS 3 (INGRESO HASTA 01:00 HS)',  precio: 18000 },
-    { col: 10, nombre: 'General - Tanda 1',                 key: 'GENERAL - TANDA 1',                      precio: 23000 },
-    { col: 11, nombre: 'General - Tanda 2',                 key: 'GENERAL - TANDA 2',                      precio: 25000 },
-    { col: 12, nombre: 'General - Tanda 3',                 key: 'GENERAL - TANDA 3',                      precio: 30000 },
-    { col: 13, nombre: 'General Tanda 1',                   key: 'GENERAL TANDA 1',                        precio: 30000 },
-    { col: 14, nombre: 'Acceso General - Free',             key: 'ACCESO GENERAL - FREE',                  precio: 0 },
-    { col: 15, nombre: 'Acceso S/Cargo General',            key: 'ACCESO S/CARGO GENERAL',                 precio: 0 },
-    { col: 16, nombre: 'Acceso S/Cargo Backstage',          key: 'ACCESO S/CARGO BACKSTAGE',               precio: 0 },
-    { col: 17, nombre: 'Acceso S/Cargo - VIP Front',        key: 'ACCESO S/CARGO - VIP FRONT',             precio: 0 },
+    { col: 10, nombre: 'Early Pass (hasta 01:00 hs)',       key: 'EARLY PASS (INGRESO HASTA 01:00 HS)',    precio: 18000 },
+    { col: 11, nombre: 'General - Tanda 1',                 key: 'GENERAL - TANDA 1',                      precio: 23000 },
+    { col: 12, nombre: 'General - Tanda 2',                 key: 'GENERAL - TANDA 2',                      precio: 25000 },
+    { col: 13, nombre: 'General - Tanda 3',                 key: 'GENERAL - TANDA 3',                      precio: 30000 },
+    { col: 14, nombre: 'General Tanda 1',                   key: 'GENERAL TANDA 1',                        precio: 30000 },
+    { col: 15, nombre: 'Acceso General - Free',             key: 'ACCESO GENERAL - FREE',                  precio: 0 },
+    { col: 16, nombre: 'Acceso S/Cargo General',            key: 'ACCESO S/CARGO GENERAL',                 precio: 0 },
+    { col: 17, nombre: 'Acceso S/Cargo Backstage',          key: 'ACCESO S/CARGO BACKSTAGE',               precio: 0 },
+    { col: 18, nombre: 'Acceso S/Cargo - VIP Front',        key: 'ACCESO S/CARGO - VIP FRONT',             precio: 0 },
   ],
 };
 
@@ -718,7 +719,7 @@ async function loadData() {
   try {
     const [ventas, diarias, tipos, totalesTix, totalesRec, horarios, montos] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:C500"),
-      fetchSheet("Ventas Diarias!A4:R80"),
+      fetchSheet("Ventas Diarias!A4:S80"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
       fetchSheet("Ventas Diarias!B81:B81"),
       fetchSheet("Ventas Diarias!C82:C82"),
