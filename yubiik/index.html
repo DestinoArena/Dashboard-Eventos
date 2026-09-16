@@ -158,6 +158,11 @@
     <div class="chart-card" style="margin-bottom:12px;">
       <div class="card-title">Transacciones por franja horaria</div>
       <div id="pico-horario" style="font-size:12px;color:var(--accent);margin:-6px 0 14px;font-family:'DM Mono',monospace;"></div>
+      <div class="legend" style="margin-bottom:10px;">
+        <span class="legend-item"><span class="legend-dot" style="background:#c8f135"></span>Alta actividad (≥70% del pico)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#4d9fff"></span>Media (40–70% del pico)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#2a2a2a"></span>Baja (&lt;40% del pico)</span>
+      </div>
       <div class="chart-wrap" style="height:240px;"><canvas id="chartHorario"></canvas></div>
     </div>
 
