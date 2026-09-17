@@ -235,8 +235,9 @@ const CONFIG = {
     { col: 14, nombre: 'General Tanda 1',                   key: 'GENERAL TANDA 1',                        precio: 30000 },
     { col: 15, nombre: 'Acceso General - Free',             key: 'ACCESO GENERAL - FREE',                  precio: 0 },
     { col: 16, nombre: 'Acceso S/Cargo General',            key: 'ACCESO S/CARGO GENERAL',                 precio: 0 },
-    { col: 17, nombre: 'Acceso S/Cargo Backstage',          key: 'ACCESO S/CARGO BACKSTAGE',               precio: 0 },
-    { col: 18, nombre: 'Acceso S/Cargo - VIP Front',        key: 'ACCESO S/CARGO - VIP FRONT',             precio: 0 },
+    { col: 17, nombre: 'Acceso Backstage - Free',           key: 'ACCESO BACKSTAGE - FREE',                precio: 0 },
+    { col: 18, nombre: 'Acceso S/Cargo Backstage',          key: 'ACCESO S/CARGO BACKSTAGE',               precio: 0 },
+    { col: 19, nombre: 'Acceso S/Cargo - VIP Front',        key: 'ACCESO S/CARGO - VIP FRONT',             precio: 0 },
   ],
 };
 
@@ -719,7 +720,7 @@ async function loadData() {
   try {
     const [ventas, diarias, tipos, totalesTix, totalesRec, horarios, montos] = await Promise.all([
       fetchSheet("Dataset Registro Ventas!A2:C500"),
-      fetchSheet("Ventas Diarias!A4:S80"),
+      fetchSheet("Ventas Diarias!A4:T80"),
       fetchSheet("Dataset Tipos De Tickets!B4:F59"),
       fetchSheet("Ventas Diarias!B81:B81"),
       fetchSheet("Ventas Diarias!C82:C82"),
