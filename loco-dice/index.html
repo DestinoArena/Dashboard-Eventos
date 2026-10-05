@@ -204,23 +204,25 @@ const CONFIG = {
   SHEET_ID: '11iIsX20iUXnWA_yQXioNnVhK76azWRnBBAAhZrVCa_Q',
   REFRESH_SEG: 60,
   // Columnas de "Ventas Diarias" (índice dentro de la fila fetch-eada, A=0)
-  // A=Fecha(0) B=Total(1) C=Total Ingresos base(2) D..M=tipos(3..12) N..P=Acceso S/Cargo(13..15) Q=Service Charge(16)
+  // A=Fecha(0) B=Total(1) C=Total Ingresos base(2) D..O=tipos(3..14) P..R=Acceso S/Cargo(15..17) S=Service Charge(18)
   COL_TICKETS: [
     { col: 3,  nombre: 'VIP Standing - Tanda 1',         precio: 80000 },
-    { col: 4,  nombre: 'Early Bird General',             precio: 40000 },
-    { col: 5,  nombre: 'General Tanda 1',                precio: 45000 },
-    { col: 6,  nombre: 'General Tanda 2',                precio: 50000 },
-    { col: 7,  nombre: 'General Tanda 3',                precio: 60000 },
-    { col: 8,  nombre: 'VIP Standing - Tanda 1 - BP',    precio: 80000 },
-    { col: 9,  nombre: 'Early Bird General - BP',        precio: 40000 },
-    { col: 10, nombre: 'General Tanda 1 - BP',           precio: 45000 },
-    { col: 11, nombre: 'General Tanda 2 - BP',           precio: 50000 },
-    { col: 12, nombre: 'General Tanda 3 - BP',           precio: 60000 },
-    { col: 13, nombre: 'Acceso S/Cargo General',         precio: 0 },
-    { col: 14, nombre: 'Acceso S/Cargo Backstage',       precio: 0 },
-    { col: 15, nombre: 'Acceso S/Cargo - VIP Front',     precio: 0 },
+    { col: 4,  nombre: 'VIP Standing - Tanda 2',         precio: 95000 },
+    { col: 5,  nombre: 'Early Bird General',             precio: 40000 },
+    { col: 6,  nombre: 'General Tanda 1',                precio: 45000 },
+    { col: 7,  nombre: 'General Tanda 2',                precio: 50000 },
+    { col: 8,  nombre: 'General Tanda 3',                precio: 60000 },
+    { col: 9,  nombre: 'VIP Standing - Tanda 1 - BP',    precio: 80000 },
+    { col: 10, nombre: 'VIP Standing - Tanda 2 - BP',    precio: 95000 },
+    { col: 11, nombre: 'Early Bird General - BP',        precio: 40000 },
+    { col: 12, nombre: 'General Tanda 1 - BP',           precio: 45000 },
+    { col: 13, nombre: 'General Tanda 2 - BP',           precio: 50000 },
+    { col: 14, nombre: 'General Tanda 3 - BP',           precio: 60000 },
+    { col: 15, nombre: 'Acceso S/Cargo General',         precio: 0 },
+    { col: 16, nombre: 'Acceso S/Cargo Backstage',       precio: 0 },
+    { col: 17, nombre: 'Acceso S/Cargo - VIP Front',     precio: 0 },
   ],
-  COL_SERVICIO: 16, // columna Q
+  COL_SERVICIO: 18, // columna S
 };
 
 const SHEET_ID   = CONFIG.SHEET_ID;
@@ -534,8 +536,8 @@ function buildDashboard(tipos, diarias) {
 async function loadData() {
   try {
     const [tipos, diarias] = await Promise.all([
-      fetchSheet("Dataset Tipos De Tickets!B2:D14"),
-      fetchSheet("Ventas Diarias!A4:Q117"),
+      fetchSheet("Dataset Tipos De Tickets!B2:D30"),
+      fetchSheet("Ventas Diarias!A4:S117"),
     ]);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
