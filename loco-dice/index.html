@@ -204,25 +204,10 @@ const CONFIG = {
   SHEET_ID: '11iIsX20iUXnWA_yQXioNnVhK76azWRnBBAAhZrVCa_Q',
   REFRESH_SEG: 60,
   // Columnas de "Ventas Diarias" (índice dentro de la fila fetch-eada, A=0)
-  // A=Fecha(0) B=Total(1) C=Total Ingresos base(2) D..O=tipos(3..14) P..R=Acceso S/Cargo(15..17) S=Service Charge(18)
-  COL_TICKETS: [
-    { col: 3,  nombre: 'VIP Standing - Tanda 1',         precio: 80000 },
-    { col: 4,  nombre: 'VIP Standing - Tanda 2',         precio: 95000 },
-    { col: 5,  nombre: 'Early Bird General',             precio: 40000 },
-    { col: 6,  nombre: 'General Tanda 1',                precio: 45000 },
-    { col: 7,  nombre: 'General Tanda 2',                precio: 50000 },
-    { col: 8,  nombre: 'General Tanda 3',                precio: 60000 },
-    { col: 9,  nombre: 'VIP Standing - Tanda 1 - BP',    precio: 80000 },
-    { col: 10, nombre: 'VIP Standing - Tanda 2 - BP',    precio: 95000 },
-    { col: 11, nombre: 'Early Bird General - BP',        precio: 40000 },
-    { col: 12, nombre: 'General Tanda 1 - BP',           precio: 45000 },
-    { col: 13, nombre: 'General Tanda 2 - BP',           precio: 50000 },
-    { col: 14, nombre: 'General Tanda 3 - BP',           precio: 60000 },
-    { col: 15, nombre: 'Acceso S/Cargo General',         precio: 0 },
-    { col: 16, nombre: 'Acceso S/Cargo Backstage',       precio: 0 },
-    { col: 17, nombre: 'Acceso S/Cargo - VIP Front',     precio: 0 },
-  ],
-  COL_SERVICIO: 18, // columna S
+  // Los tipos de ticket, sus columnas y precios se leen solos de los encabezados de "Ventas Diarias"
+  // (fila 2 = nombre, fila 3 = precio). Si agregás/cambiás una columna o un precio, el dashboard lo toma solo.
+  COL_TICKETS: [],
+  COL_SERVICIO: -1,
 };
 
 const SHEET_ID   = CONFIG.SHEET_ID;
@@ -269,6 +254,21 @@ function fechaStr(raw, incluirAnio) {
     ? { day:'2-digit', month:'2-digit', year:'numeric' }
     : { day:'2-digit', month:'2-digit' };
   return d.toLocaleDateString('es-AR', opts);
+}
+
+// Detecta columnas de tipos de ticket (entre la col D y "Service Charge"/"Anuladas") con su precio de la fila 3
+function parseLayout(headers, prices) {
+  const idxServicio = headers.findIndex((h, i) => i >= 3 && /service|servicio/i.test(String(h || '')));
+  const idxAnuladas = headers.findIndex((h, i) => i >= 3 && /anulad/i.test(String(h || '')));
+  const limites = [idxServicio, idxAnuladas].filter(i => i >= 0);
+  const fin = limites.length ? Math.min(...limites) : headers.length;
+  const cols = [];
+  for (let i = 3; i < fin; i++) {
+    const nombre = String(headers[i] || '').trim();
+    if (!nombre) continue;
+    cols.push({ col: i, nombre, precio: parsePesos(prices[i]) });
+  }
+  return { cols, servicio: idxServicio };
 }
 
 function buildDashboard(tipos, diarias) {
@@ -326,7 +326,7 @@ function buildDashboard(tipos, diarias) {
   // ── Banco Provincia vs Todos los Bancos ──
   let stdTix = 0, stdRec = 0, bpTix = 0, bpRec = 0;
   Object.values(tipoMap).forEach(t => {
-    if (t.nombre.includes(' - BP')) { bpTix += t.vendidos; bpRec += t.recaudacion; }
+    if (/-\s*BP\s*$/i.test(t.nombre)) { bpTix += t.vendidos; bpRec += t.recaudacion; }
     else { stdTix += t.vendidos; stdRec += t.recaudacion; }
   });
 
@@ -535,10 +535,14 @@ function buildDashboard(tipos, diarias) {
 
 async function loadData() {
   try {
-    const [tipos, diarias] = await Promise.all([
+    const [tipos, hoja] = await Promise.all([
       fetchSheet("Dataset Tipos De Tickets!B2:D30"),
-      fetchSheet("Ventas Diarias!A4:S117"),
+      fetchSheet("Ventas Diarias!A2:AD117"),
     ]);
+    const layout = parseLayout(hoja[0] || [], hoja[1] || []);
+    CONFIG.COL_TICKETS = layout.cols;
+    CONFIG.COL_SERVICIO = layout.servicio;
+    const diarias = hoja.slice(2);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     buildDashboard(tipos, diarias);
