@@ -489,7 +489,10 @@ function buildDashboard(tipos, diarias) {
       <td style="font-family:'DM Mono',monospace;color:#888;">${pct}%</td>
       <td>${badge}</td>
     </tr>`;
-  }).join('') + `<tr class="total-row"><td>Total</td><td>—</td><td>${totalTix}</td><td>—</td><td>${fmt(totalBaseRec)}</td><td>100%</td><td>—</td></tr>`;
+  }).join('')
+    + `<tr><td style="color:var(--text2);">Subtotal entradas</td><td>—</td><td style="font-family:'DM Mono',monospace;">${totalTix}</td><td>—</td><td style="font-family:'DM Mono',monospace;">${fmt(totalBaseRec)}</td><td style="font-family:'DM Mono',monospace;color:#888;">100%</td><td>—</td></tr>`
+    + `<tr><td style="color:var(--amber);font-style:italic;">Cargo por servicio (15%)</td><td>—</td><td>—</td><td>—</td><td style="font-family:'DM Mono',monospace;color:var(--amber);">${fmt(totalServicio)}</td><td>—</td><td>—</td></tr>`
+    + `<tr class="total-row"><td>Total</td><td>—</td><td>${totalTix}</td><td>—</td><td>${fmt(totalRec)}</td><td>—</td><td>—</td></tr>`;
 
   // ── Tabla detalle por fecha ──
   let htmlDetalle = '';
