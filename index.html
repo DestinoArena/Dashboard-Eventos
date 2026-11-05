@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboards - Only by Destino Arena</title>
-<meta property="og:title" content="Dashboards - Only by Destino Arena">
+<title>Dashboards - Destino Arena</title>
+<meta property="og:title" content="Dashboards - Destino Arena">
 <meta property="og:description" content="Dashboards de ventas en tiempo real">
 <meta property="og:type" content="website">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #080808;
-    --text: #f0f0f0;
-    --text2: #888;
-    --text3: #444;
-    --accent: #c8f135;
-    --accent-dim: rgba(200,241,53,0.06);
+    --text: #f4f4f1;
+    --text2: #9c9c98;
+    --text3: #7c7c78;
+    --accent: #8b5cf6; --accent-text: #a78bfa;
+    --accent-dim: rgba(139,92,246,0.06);
     --border: rgba(255,255,255,0.07);
     --border2: rgba(255,255,255,0.14);
   }
@@ -100,14 +100,14 @@
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 3px;
-    color: var(--accent);
+    color:var(--accent-text);
     font-family: 'DM Mono', monospace;
     margin-bottom: 14px;
     opacity: 0;
     animation: fadeUp 0.6s ease forwards;
   }
   .page-intro h1 {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'DM Sans', sans-serif; font-weight: 800; text-transform: uppercase;
     font-size: clamp(52px, 8vw, 96px);
     letter-spacing: 2px;
     line-height: 0.9;
@@ -115,7 +115,7 @@
     opacity: 0;
     animation: fadeUp 0.6s ease 0.1s forwards;
   }
-  .page-intro h1 span { color: var(--accent); }
+  .page-intro h1 span { color:var(--accent-text); }
   .page-intro .sub {
     margin-top: 18px;
     font-size: 14px;
@@ -138,7 +138,7 @@
     background: var(--accent);
     border: 1px solid var(--accent);
     padding: 10px 18px;
-    border-radius: 30px;
+    border-radius:4px;
     text-decoration: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
     white-space: nowrap;
@@ -159,7 +159,7 @@
 
   .event-card {
     position: relative;
-    border-radius: 16px;
+    border-radius:8px;
     overflow: hidden;
     cursor: pointer;
     text-decoration: none;
@@ -173,7 +173,7 @@
   .event-card:nth-child(1) { animation-delay: 0.25s; }
 
   .event-card:hover {
-    border-color: rgba(200,241,53,0.3);
+    border-color: rgba(139,92,246,0.3);
     transform: translateY(-6px);
   }
 
@@ -213,15 +213,15 @@
     text-transform: uppercase;
     letter-spacing: 2px;
     font-family: 'DM Mono', monospace;
-    color: var(--accent);
-    background: rgba(200,241,53,0.1);
-    border: 1px solid rgba(200,241,53,0.25);
+    color:var(--accent-text);
+    background: rgba(139,92,246,0.1);
+    border: 1px solid rgba(139,92,246,0.25);
     padding: 4px 10px;
-    border-radius: 20px;
+    border-radius:4px;
     margin-bottom: 10px;
   }
   .event-card .artist {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'DM Sans', sans-serif; font-weight: 800; text-transform: uppercase;
     font-size: clamp(28px, 4vw, 44px);
     letter-spacing: 1px;
     line-height: 1;
@@ -244,7 +244,7 @@
     font-family: 'DM Mono', monospace;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: var(--accent);
+    color:var(--accent-text);
     opacity: 0;
     transform: translateY(6px);
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -287,12 +287,12 @@
 <body>
 
 <div class="bg-logo">
-  <img src="./images/logo_destino_arena.png" alt="">
+  <img src="./images/logo_destino_arena_produce.png" alt="">
 </div>
 
 <header>
   <div class="header-logo">
-    <img src="./images/logo_destino_arena.png" alt="Only by Destino Arena">
+    <img src="./images/logo_destino_arena_produce.png" alt="Destino Arena">
   </div>
   <div class="header-meta">
     <a class="anteriores-btn" href="./anteriores.html">Eventos anteriores <span class="cta-arrow">→</span></a>
@@ -360,7 +360,7 @@
 </main>
 
 <footer>
-  <span>Only by Destino Arena · Mar del Plata</span>
+  <span>Destino Arena · Mar del Plata · Buenos Aires</span>
   <span>2026</span>
 </footer>
 

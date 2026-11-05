@@ -8,24 +8,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   :root {
-    --bg: #0a0a0a; --bg2: #111111; --bg3: #1a1a1a;
+    --bg: #080808; --bg2: #161616; --bg3: #222222;
     --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
-    --text: #f0f0f0; --text2: #888; --text3: #555;
-    --accent: #c8f135; --accent-dim: rgba(200,241,53,0.08);
-    --red: #ff4d4d; --blue: #4d9fff; --amber: #ffb84d;
+    --text: #f4f4f1; --text2: #9c9c98; --text3: #7c7c78;
+    --accent: #8b5cf6; --accent-text: #a78bfa; --accent-dim: rgba(139,92,246,0.08);
+    --red: #ff4d4d; --blue: #c4b5fd; --amber: #ffb84d;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-height: 100vh; }
-  header { border-bottom: 1px solid var(--border); padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: rgba(10,10,10,0.95); backdrop-filter: blur(12px); z-index: 100; }
+  header { border-bottom: 1px solid var(--border); padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: rgba(8,8,8,0.95); backdrop-filter: blur(12px); z-index: 100; }
   .header-left { display: flex; align-items: center; gap: 16px; }
-  .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 8px var(--accent)} 50%{opacity:.5;box-shadow:0 0 4px var(--accent)} }
+  .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
   .header-title { font-size: 15px; font-weight: 500; letter-spacing: -0.2px; }
   .header-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
   .header-right { display: flex; align-items: center; gap: 16px; }
   .back-link { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; text-decoration: none; transition: color 0.2s; }
-  .back-link:hover { color: var(--accent); }
-  .live-badge { display:flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(200,241,53,0.2);color:var(--accent);font-size:11px;font-family:'DM Mono',monospace;padding:5px 12px;border-radius:20px;letter-spacing:.5px; }
+  .back-link:hover { color:var(--accent-text); }
+  .live-badge { display:flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(139,92,246,0.2);color:var(--accent-text);font-size:11px;font-family:'DM Mono',monospace;padding:5px 12px;border-radius:4px;letter-spacing:.5px; }
   .live-dot { width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite; }
   .last-update { font-size:11px;color:var(--text3);font-family:'DM Mono',monospace; }
   main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
@@ -35,28 +35,28 @@
   #error-msg { display:none;background:rgba(255,77,77,0.08);border:1px solid rgba(255,77,77,0.2);color:var(--red);padding:16px 20px;border-radius:8px;font-family:'DM Mono',monospace;font-size:12px;margin-bottom:24px; }
   #dashboard { display:none; }
   .kpi-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px; }
-  .kpi { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;transition:border-color .2s; }
+  .kpi { background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px;transition:border-color .2s; }
   .kpi:hover { border-color:var(--border2); }
-  .kpi.accent { border-color:rgba(200,241,53,0.2);background:var(--accent-dim); }
+  .kpi.accent { border-color:rgba(139,92,246,0.2);background:var(--accent-dim); }
   .kpi-label { font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px; }
   .kpi-value { font-size:26px;font-weight:600;letter-spacing:-1px;color:var(--text);line-height:1; }
-  .kpi.accent .kpi-value { color:var(--accent); }
+  .kpi.accent .kpi-value { color:var(--accent-text); }
   .kpi-sub { font-size:11px;color:var(--text3);margin-top:6px;font-family:'DM Mono',monospace; }
   .tix-breakdown { display:flex; flex-direction:column; gap:6px; }
   .tix-row { display:flex; align-items:center; gap:8px; }
   .tix-label { font-size:11px; text-transform:uppercase; letter-spacing:.8px; font-family:'DM Mono',monospace; }
-  .tix-label.tix-main { color:var(--accent); font-size:14px; font-weight:700; }
+  .tix-label.tix-main { color:var(--accent-text); font-size:14px; font-weight:700; }
   .tix-label.tix-sub { color:var(--text2); }
   .tix-num { font-family:'DM Mono',monospace; color:var(--text); font-weight:600; }
   .tix-num.tix-main { font-size:30px; font-weight:700; }
   .tix-num.tix-sub { font-size:18px; }
   .charts-row { display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px; }
-  .chart-card { background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px; }
+  .chart-card { background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px; }
   .card-title { font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:16px; }
   .period-toggle { display:flex; gap:4px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:3px; }
   .period-btn { font-family:'DM Mono',monospace; font-size:11px; color:var(--text2); background:transparent; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; transition:background .2s ease,color .2s ease; }
   .period-btn:hover { color:var(--text); }
-  .period-btn.active { background:var(--accent); color:#0a0a0a; font-weight:600; }
+  .period-btn.active { background:var(--accent); color:#080808; font-weight:600; }
   .chart-wrap { position:relative;width:100%; }
   .legend { display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px; }
   .legend-item { display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2); }
@@ -67,9 +67,9 @@
   tbody td { padding:12px 12px;border-bottom:1px solid var(--border);color:var(--text);font-size:13px; }
   tbody tr:last-child td { border-bottom:none; }
   tbody tr:hover td { background:rgba(255,255,255,0.02); }
-  .total-row td { font-weight:600;color:var(--accent);border-top:1px solid var(--border2);border-bottom:none; }
-  .badge { display:inline-block;font-size:10px;padding:3px 8px;border-radius:20px;font-family:'DM Mono',monospace;letter-spacing:.3px; }
-  .badge-green { background:rgba(200,241,53,0.1);color:var(--accent);border:1px solid rgba(200,241,53,0.2); }
+  .total-row td { font-weight:600;color:var(--accent-text);border-top:1px solid var(--border2);border-bottom:none; }
+  .badge { display:inline-block;font-size:10px;padding:3px 8px;border-radius:4px;font-family:'DM Mono',monospace;letter-spacing:.3px; }
+  .badge-green { background:rgba(139,92,246,0.1);color:var(--accent-text);border:1px solid rgba(139,92,246,0.2); }
   .badge-red { background:rgba(255,77,77,0.1);color:var(--red);border:1px solid rgba(255,77,77,0.2); }
   .badge-blue { background:rgba(77,159,255,0.1);color:var(--blue);border:1px solid rgba(77,159,255,0.2); }
   .badge-amber { background:rgba(255,184,77,0.1);color:var(--amber);border:1px solid rgba(255,184,77,0.2); }
@@ -81,7 +81,7 @@
   .geo-list-item:last-child { border-bottom:none; }
   .geo-list-rank { font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-right:10px;width:16px;flex-shrink:0; }
   .geo-list-name { flex:1;color:var(--text); }
-  .geo-list-count { font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);margin-left:8px; }
+  .geo-list-count { font-family:'DM Mono',monospace;font-size:12px;color:var(--accent-text);margin-left:8px; }
   .geo-list-bar { height:3px;background:var(--bg3);border-radius:2px;margin-top:3px; }
   .geo-list-bar-fill { height:100%;border-radius:2px;background:var(--accent);opacity:.5; }
   .detalle-fecha-table { font-size:13px; }
@@ -92,7 +92,7 @@
   .row-fecha:first-child td { border-top: none; }
   .row-detalle td { padding: 8px 12px; border-bottom: none; color: var(--text2); }
   .row-total td { padding: 8px 12px 14px; font-weight:600; color: var(--text); border-bottom: 1px solid var(--border); font-family:'DM Mono',monospace; }
-  .grand-total td { font-weight:700; color: var(--accent); border-top: 2px solid rgba(200,241,53,0.3); font-size:13px; font-family:'DM Mono',monospace; background: var(--accent-dim); padding: 14px 12px; }
+  .grand-total td { font-weight:700; color:var(--accent-text); border-top: 2px solid rgba(139,92,246,0.3); font-size:13px; font-family:'DM Mono',monospace; background: var(--accent-dim); padding: 14px 12px; }
   footer { border-top:1px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;color:var(--text3);font-size:11px;font-family:'DM Mono',monospace; }
   @media(max-width:900px){
     main{padding:16px} .kpi-grid{grid-template-columns:repeat(2,1fr)}
@@ -103,7 +103,7 @@
 <body>
 <header>
   <div class="header-left">
-    <div class="logo-dot"></div>
+    <img src="../images/logo_destino_arena_produce.png" alt="Destino Arena" style="height:30px;display:block"><div class="logo-dot"></div>
     <div>
       <div class="header-title" id="header-title">YUBIK — Only by Destino Arena</div>
       <div class="header-sub">Dashboard de ventas en tiempo real</div>
@@ -120,11 +120,11 @@
   <div id="error-msg"></div>
   <div id="dashboard">
     <div style="margin-bottom:12px;">
-      <div style="background:var(--bg2);border:1px solid rgba(200,241,53,0.2);border-radius:12px;padding:28px 32px;margin-bottom:12px;">
+      <div style="background:var(--bg2);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:28px 32px;margin-bottom:12px;">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
           <div style="width:3px;height:32px;background:var(--accent);border-radius:2px;"></div>
           <div>
-            <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:4px;">Informe ejecutivo</div>
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--accent-text);font-family:'DM Mono',monospace;margin-bottom:4px;">Informe ejecutivo</div>
             <div style="font-size:20px;font-weight:600;color:var(--text);letter-spacing:-0.5px;">Análisis de resultados — YUBIK</div>
             <div style="font-size:12px;color:var(--text2);margin-top:2px;font-family:'DM Mono',monospace;">Sábado 10 de Octubre 2026 · La Normandina, Mar del Plata</div>
           </div>
@@ -132,7 +132,7 @@
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;">
           <div style="background:var(--bg3);border-radius:10px;padding:18px;border:1px solid var(--border);">
             <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:8px;">Recaudación total</div>
-            <div style="font-size:24px;font-weight:700;color:var(--accent);letter-spacing:-1px;">$12.606.000</div>
+            <div style="font-size:24px;font-weight:700;color:var(--accent-text);letter-spacing:-1px;">$12.606.000</div>
             <div style="font-size:11px;color:var(--text3);margin-top:4px;">630 tickets pagos · 77 días de venta</div>
           </div>
           <div style="background:var(--bg3);border-radius:10px;padding:18px;border:1px solid var(--border);">
@@ -152,25 +152,25 @@
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-          <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">Comportamiento de ventas</div><div style="font-size:13px;color:var(--text2);line-height:1.7;">El evento tuvo tres etapas bien marcadas. La apertura (27/07) fue fuerte: <span style="color:var(--accent);font-weight:600;">37 tickets y $500.000 en el primer día</span>, y hasta el 13/09 se sumaron <span style="color:var(--accent);font-weight:600;">302 tickets ($5.572.000)</span> con un ritmo sostenido de ~6 tickets/día. Tras el cambio de artista (Goom Gum → Yubik) la venta se frenó: entre el 14/09 y el 04/10 solo se vendieron <span style="color:var(--text);font-weight:500;">77 tickets ($1.594.000)</span>, unos 3,7 por día.
+          <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-text);font-family:'DM Mono',monospace;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">Comportamiento de ventas</div><div style="font-size:13px;color:var(--text2);line-height:1.7;">El evento tuvo tres etapas bien marcadas. La apertura (27/07) fue fuerte: <span style="color:var(--accent-text);font-weight:600;">37 tickets y $500.000 en el primer día</span>, y hasta el 13/09 se sumaron <span style="color:var(--accent-text);font-weight:600;">302 tickets ($5.572.000)</span> con un ritmo sostenido de ~6 tickets/día. Tras el cambio de artista (Goom Gum → Yubik) la venta se frenó: entre el 14/09 y el 04/10 solo se vendieron <span style="color:var(--text);font-weight:500;">77 tickets ($1.594.000)</span>, unos 3,7 por día.
 <br><br>
-La recuperación llegó sobre el final: los últimos 7 días (05/10 al 11/10) concentraron <span style="color:var(--accent);font-weight:600;">251 tickets (40% del total) y $5.440.000 (43% de la recaudación)</span>, con un pico de <span style="color:var(--accent);font-weight:600;">89 tickets y $1.945.000 el día del evento</span>. La <span style="color:var(--text);font-weight:500;">mediana de 5 tickets/día</span> versus una media de 8 confirma una venta muy asimétrica, con <span style="color:var(--text);font-weight:500;">9 días sin ninguna venta</span> sobre 77.</div></div>
-          <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">Mix de productos</div><div style="font-size:13px;color:var(--text2);line-height:1.7;">La familia <span style="color:var(--text);font-weight:500;">Early Pass</span> (7 variantes) fue el núcleo del evento: <span style="color:var(--accent);font-weight:600;">321 tickets (51% del total pago) y $5.466.000 (43% de la recaudación)</span>, con Early Pass 3 (hasta 01:00 hs, $18.000) como mejor variante: 148 tickets y $2.664.000. <span style="color:var(--text);font-weight:500;">Pack Amigos (2 ingresos)</span> fue el producto individual más vendido: <span style="color:var(--accent);font-weight:600;">208 tickets y $3.640.000 (29% de la recaudación)</span>.
+La recuperación llegó sobre el final: los últimos 7 días (05/10 al 11/10) concentraron <span style="color:var(--accent-text);font-weight:600;">251 tickets (40% del total) y $5.440.000 (43% de la recaudación)</span>, con un pico de <span style="color:var(--accent-text);font-weight:600;">89 tickets y $1.945.000 el día del evento</span>. La <span style="color:var(--text);font-weight:500;">mediana de 5 tickets/día</span> versus una media de 8 confirma una venta muy asimétrica, con <span style="color:var(--text);font-weight:500;">9 días sin ninguna venta</span> sobre 77.</div></div>
+          <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-text);font-family:'DM Mono',monospace;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">Mix de productos</div><div style="font-size:13px;color:var(--text2);line-height:1.7;">La familia <span style="color:var(--text);font-weight:500;">Early Pass</span> (7 variantes) fue el núcleo del evento: <span style="color:var(--accent-text);font-weight:600;">321 tickets (51% del total pago) y $5.466.000 (43% de la recaudación)</span>, con Early Pass 3 (hasta 01:00 hs, $18.000) como mejor variante: 148 tickets y $2.664.000. <span style="color:var(--text);font-weight:500;">Pack Amigos (2 ingresos)</span> fue el producto individual más vendido: <span style="color:var(--accent-text);font-weight:600;">208 tickets y $3.640.000 (29% de la recaudación)</span>.
 <br><br>
-El segmento <span style="color:var(--text);font-weight:500;">Backstage</span> rindió muy por encima de su peso: <span style="color:var(--accent);font-weight:600;">55 tickets (8,7%) generaron $2.475.000 (19,6% de la recaudación)</span>. Las tandas de General, en cambio, fueron marginales (33 tickets, $830.000, 6,6%): el público compró casi todo a través de los Early Pass y los packs.</div></div>
-          <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">Estrategia de precios</div><div style="font-size:13px;color:var(--text2);line-height:1.7;">La escalera de Early Pass ($10.000 → $13.000 → $15.000 → $18.000 → $20.000) <span style="color:var(--text);font-weight:500;">no frenó la demanda</span>: las variantes de $18.000 y $20.000 sumaron 226 tickets, más del doble que las tres variantes iniciales (95 tickets). Early Pass 3 vendió 148 de sus 174 cupos (85%) y las tres primeras variantes cerraron casi completas (23/27, 31/36 y 41/49).
+El segmento <span style="color:var(--text);font-weight:500;">Backstage</span> rindió muy por encima de su peso: <span style="color:var(--accent-text);font-weight:600;">55 tickets (8,7%) generaron $2.475.000 (19,6% de la recaudación)</span>. Las tandas de General, en cambio, fueron marginales (33 tickets, $830.000, 6,6%): el público compró casi todo a través de los Early Pass y los packs.</div></div>
+          <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-text);font-family:'DM Mono',monospace;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">Estrategia de precios</div><div style="font-size:13px;color:var(--text2);line-height:1.7;">La escalera de Early Pass ($10.000 → $13.000 → $15.000 → $18.000 → $20.000) <span style="color:var(--text);font-weight:500;">no frenó la demanda</span>: las variantes de $18.000 y $20.000 sumaron 226 tickets, más del doble que las tres variantes iniciales (95 tickets). Early Pass 3 vendió 148 de sus 174 cupos (85%) y las tres primeras variantes cerraron casi completas (23/27, 31/36 y 41/49).
 <br><br>
 Las tandas de General ($23.000 a $35.000) casi no se movieron: <span style="color:var(--text);font-weight:500;">el comprador prefirió siempre la opción con beneficio de horario o de pack</span> antes que el precio de puerta. El <span style="color:var(--text);font-weight:500;">ticket promedio de $20.010</span> está sostenido por Backstage ($45.000) y los packs.</div></div>
-          <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">Geografía y alcance</div><div style="font-size:13px;color:var(--text2);line-height:1.7;">El <span style="color:var(--accent);font-weight:600;">70,5% de los compradores</span> geolocalizados proviene de Mar del Plata, con 12 localidades distintas. Siguen <span style="color:var(--text);font-weight:500;">Balcarce (26 tickets, 8,7%)</span>, CABA (19), Necochea (9) y Tandil (6). El <span style="color:var(--text);font-weight:500;">85,9% de las ventas corresponde a la provincia de Buenos Aires</span>, con presencia menor de otras provincias (Mendoza, Chubut).
+          <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-text);font-family:'DM Mono',monospace;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">Geografía y alcance</div><div style="font-size:13px;color:var(--text2);line-height:1.7;">El <span style="color:var(--accent-text);font-weight:600;">70,5% de los compradores</span> geolocalizados proviene de Mar del Plata, con 12 localidades distintas. Siguen <span style="color:var(--text);font-weight:500;">Balcarce (26 tickets, 8,7%)</span>, CABA (19), Necochea (9) y Tandil (6). El <span style="color:var(--text);font-weight:500;">85,9% de las ventas corresponde a la provincia de Buenos Aires</span>, con presencia menor de otras provincias (Mendoza, Chubut).
 <br><br>
 <span style="color:var(--text);font-weight:500;">Nota metodológica:</span> el detalle por comprador del sheet llega hasta el 22/09, por lo que esta lectura geográfica se basa en 298 tickets (aprox. la mitad de los pagos) y no incluye la venta del cierre.</div></div>
         </div>
         <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
-          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:14px;">Conclusiones y recomendaciones</div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-text);font-family:'DM Mono',monospace;margin-bottom:14px;">Conclusiones y recomendaciones</div>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
             <div style="background:var(--bg3);border-radius:8px;padding:16px;border-left:3px solid var(--accent);">
               <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;">Los tickets sin cargo fueron el 54% de lo emitido</div>
-              <div style="font-size:12px;color:var(--text2);line-height:1.6;">Se emitieron 1.383 tickets, de los cuales <span style="color:var(--accent);font-weight:600;">753 fueron sin cargo (54,5%)</span> frente a 630 pagos. 287 salieron el 16/09, tras el cambio de artista, y otros 445 entre el 07/10 y el 11/10. Conviene separar esta cifra de la de venta real y definir un criterio y un tope de invitaciones por evento.</div>
+              <div style="font-size:12px;color:var(--text2);line-height:1.6;">Se emitieron 1.383 tickets, de los cuales <span style="color:var(--accent-text);font-weight:600;">753 fueron sin cargo (54,5%)</span> frente a 630 pagos. 287 salieron el 16/09, tras el cambio de artista, y otros 445 entre el 07/10 y el 11/10. Conviene separar esta cifra de la de venta real y definir un criterio y un tope de invitaciones por evento.</div>
             </div>
             <div style="background:var(--bg3);border-radius:8px;padding:16px;border-left:3px solid #4f9dff;">
               <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;">El cambio de artista costó tres semanas de venta</div>
@@ -223,11 +223,11 @@ Las tandas de General ($23.000 a $35.000) casi no se movieron: <span style="colo
     </div>
     <div class="chart-card" style="margin-bottom:12px;">
       <div class="card-title">Transacciones por franja horaria</div>
-      <div id="pico-horario" style="font-size:12px;color:var(--accent);margin:-6px 0 14px;font-family:'DM Mono',monospace;"></div>
+      <div id="pico-horario" style="font-size:12px;color:var(--accent-text);margin:-6px 0 14px;font-family:'DM Mono',monospace;"></div>
       <div class="legend" style="margin-bottom:10px;">
-        <span class="legend-item"><span class="legend-dot" style="background:#c8f135"></span>Alta actividad (≥70% del pico)</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#4d9fff"></span>Media (40–70% del pico)</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#2a2a2a"></span>Baja (&lt;40% del pico)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Alta actividad (≥70% del pico)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#5b21b6"></span>Media (40–70% del pico)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#2e2e2e"></span>Baja (&lt;40% del pico)</span>
       </div>
       <div class="chart-wrap" style="height:240px;"><canvas id="chartHorario"></canvas></div>
     </div>
@@ -311,8 +311,8 @@ const CONFIG = {
 
 const SHEET_ID   = CONFIG.SHEET_ID;
 const REFRESH_MS = CONFIG.REFRESH_SEG * 1000;
-const COLORS     = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4','#f135c8','#35c8f1'];
-const GEO_COLORS = ['#c8f135','#4d9fff','#ffb84d','#ff4d4d','#b44dff','#4dffd4','#ff8c4d','#4dffb4','#f135c8','#35c8f1','#f1c835','#c835f1'];
+const COLORS     = ['#8b5cf6','#f4f4f1','#c4b5fd','#9c9c98','#6d28d9','#5c5c58','#ddd6fe','#4c1d95','#d6d6d0','#3b3b38'];
+const GEO_COLORS = ['#8b5cf6','#f4f4f1','#c4b5fd','#9c9c98','#6d28d9','#5c5c58','#ddd6fe','#4c1d95','#d6d6d0','#3b3b38','#a78bfa','#7c7c78'];
 
 let chartDona, chartBarras, chartLinea, chartGeo, chartHorario;
 
@@ -513,7 +513,7 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
   if (chartDona) chartDona.destroy();
   chartDona = new Chart(document.getElementById('chartDona'), {
     type: 'doughnut',
-    data: { labels, datasets: [{ data: cantidades, backgroundColor: colores, borderWidth: 2, borderColor: '#111' }] },
+    data: { labels, datasets: [{ data: cantidades, backgroundColor: colores, borderWidth: 2, borderColor: '#161616' }] },
     options: { responsive: true, maintainAspectRatio: false, cutout: '65%',
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} tickets` } } } }
   });
@@ -525,7 +525,7 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
     data: { labels: tiposConCosto.map(t => t.nombre.length > 14 ? t.nombre.substring(0,13)+'…' : t.nombre), datasets: [{ data: tiposConCosto.map(t => t.recaudacion), backgroundColor: tiposConCosto.map(t => t.color), borderRadius: 4, borderSkipped: false }] },
     options: { responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmt(ctx.raw)}` } } },
-      scales: { x: { grid: { display: false }, ticks: { color: '#555', font: { size: 10 } } }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 }, callback: v => '$'+(v/1000)+'k' } } } }
+      scales: { x: { grid: { display: false }, ticks: { color: '#7c7c78', font: { size: 10 } } }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#7c7c78', font: { size: 10 }, callback: v => '$'+(v/1000)+'k' } } } }
   });
 
   document.getElementById('progress-section').innerHTML = Object.values(tipoMap).filter(t => t.vendidos > 0)
@@ -534,7 +534,7 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
     const pct = Math.min(100, Math.round((t.vendidos / t.max) * 100));
     return `<div style="margin-bottom:14px;">
       <div class="progress-label"><span>${t.nombre}</span><span>${t.vendidos}/${t.max}</span></div>
-      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${pct>=90?'#ff4d4d':pct>=60?'#ffb84d':'#c8f135'}"></div></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${pct>=90?'#ff4d4d':pct>=60?'#ffb84d':'#8b5cf6'}"></div></div>
     </div>`;
   }).join('');
 
@@ -604,10 +604,10 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
     if (chartLinea) chartLinea.destroy();
     chartLinea = new Chart(document.getElementById('chartLinea'), {
       type: 'bar',
-      data: { labels, datasets: [{ label: 'Tickets vendidos', data: values, backgroundColor: '#c8f135', borderRadius: 4, borderSkipped: false }] },
+      data: { labels, datasets: [{ label: 'Tickets vendidos', data: values, backgroundColor: '#8b5cf6', borderRadius: 4, borderSkipped: false }] },
       options: { responsive: true, maintainAspectRatio: false,
         plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} tickets` } } },
-        scales: { x: { grid: { display: false }, ticks: { color: '#555', font: { size: 11 }, maxRotation: 45, autoSkip: false }, offset: true }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 11 } }, min: 0 } } }
+        scales: { x: { grid: { display: false }, ticks: { color: '#7c7c78', font: { size: 11 }, maxRotation: 45, autoSkip: false }, offset: true }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#7c7c78', font: { size: 11 } }, min: 0 } } }
     });
   }
 
@@ -619,9 +619,9 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
       <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${colores[i]};margin-right:8px;"></span>${t.nombre}</td>
       <td style="font-family:'DM Mono',monospace;">${t.precio === 0 ? 'Gratis' : fmt(t.precio)}</td>
       <td style="font-family:'DM Mono',monospace;">${t.vendidos}</td>
-      <td style="font-family:'DM Mono',monospace;color:#555;">${t.max}</td>
+      <td style="font-family:'DM Mono',monospace;color:#7c7c78;">${t.max}</td>
       <td style="font-family:'DM Mono',monospace;">${fmt(t.recaudacion)}</td>
-      <td style="font-family:'DM Mono',monospace;color:#888;">${pct}%</td>
+      <td style="font-family:'DM Mono',monospace;color:#9c9c98;">${pct}%</td>
     </tr>`;
   }).join('') + `<tr class="total-row"><td>Total</td><td>—</td><td>${totalTix}</td><td>—</td><td>${fmt(totalRec)}</td><td>100%</td><td>—</td></tr>`;
 
@@ -647,7 +647,7 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
   if (chartGeo) chartGeo.destroy();
   chartGeo = new Chart(document.getElementById('chartGeo'), {
     type: 'pie',
-    data: { labels: localidadesArr.map(l => l.name), datasets: [{ data: localidadesArr.map(l => l.count), backgroundColor: geoColores, borderWidth: 2, borderColor: '#111' }] },
+    data: { labels: localidadesArr.map(l => l.name), datasets: [{ data: localidadesArr.map(l => l.count), backgroundColor: geoColores, borderWidth: 2, borderColor: '#161616' }] },
     options: { responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => {
         const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
@@ -690,7 +690,7 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
   const maxFranja = Math.max(...franjas);
   const horaColors = franjas.map(v => {
     const ratio = maxFranja > 0 ? v / maxFranja : 0;
-    return ratio > 0.7 ? '#c8f135' : ratio > 0.4 ? '#4d9fff' : '#2a2a2a';
+    return ratio > 0.7 ? '#8b5cf6' : ratio > 0.4 ? '#5b21b6' : '#2e2e2e';
   });
 
   // ── Franja pico (rango horario con más ventas) ──
@@ -724,8 +724,8 @@ function buildDashboard(ventas, diarias, tipos, totalesTix, totalesRec, horarios
         tooltip: { callbacks: { label: ctx => ` ${ctx.raw} transacciones` } }
       },
       scales: {
-        x: { grid: { display: false }, ticks: { color: '#555', font: { size: 10 }, maxRotation: 0 } },
-        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 10 } }, min: 0 }
+        x: { grid: { display: false }, ticks: { color: '#7c7c78', font: { size: 10 }, maxRotation: 0 } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#7c7c78', font: { size: 10 } }, min: 0 }
       }
     }
   });
