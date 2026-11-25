@@ -90,7 +90,7 @@
   }
 
   .page-intro {
-    margin-bottom: 56px;
+    margin-bottom: 48px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -108,7 +108,7 @@
   }
   .page-intro h1 {
     font-family: 'DM Sans', sans-serif; font-weight: 800; text-transform: uppercase;
-    font-size: clamp(52px, 8vw, 96px);
+    font-size: clamp(30px, 4.5vw, 52px);
     letter-spacing: 2px;
     line-height: 0.9;
     color: var(--text);
@@ -264,14 +264,15 @@
   .event-section { margin-bottom: 72px; }
   .event-section:last-child { margin-bottom: 0; }
   .section-title {
-    display: flex; align-items: center; justify-content: center; gap: 20px;
-    font-family: 'DM Mono', monospace; font-weight: 500;
-    font-size: 12px; text-transform: uppercase; letter-spacing: 3px;
+    display: flex; align-items: center; justify-content: center; gap: 24px;
+    font-family: 'DM Sans', sans-serif; font-weight: 800;
+    font-size: clamp(30px, 5vw, 56px); text-transform: uppercase; letter-spacing: 2px; line-height: 1;
     color: var(--accent-text);
-    margin-bottom: 28px;
+    margin-bottom: 36px;
+    text-align: center;
   }
   .section-title::before, .section-title::after {
-    content: ''; height: 1px; width: min(120px, 18vw); background: var(--border2);
+    content: ''; height: 2px; width: min(80px, 10vw); background: var(--accent);
   }
   .events-grid.featured { grid-template-columns: minmax(260px, 520px); }
   .events-grid.featured .event-card .artist { font-size: clamp(36px, 5vw, 60px); }
