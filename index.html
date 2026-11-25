@@ -259,6 +259,24 @@
   }
   .event-card:hover .cta-arrow { transform: translateX(4px); }
 
+
+  /* ── SECCIONES ── */
+  .event-section { margin-bottom: 72px; }
+  .event-section:last-child { margin-bottom: 0; }
+  .section-title {
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+    font-family: 'DM Mono', monospace; font-weight: 500;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 3px;
+    color: var(--accent-text);
+    margin-bottom: 28px;
+  }
+  .section-title::before, .section-title::after {
+    content: ''; height: 1px; width: min(120px, 18vw); background: var(--border2);
+  }
+  .events-grid.featured { grid-template-columns: minmax(260px, 520px); }
+  .events-grid.featured .event-card .artist { font-size: clamp(36px, 5vw, 60px); }
+  .events-grid.featured .event-card .date { font-size: 14px; }
+
   /* ── FOOTER ── */
   footer {
     position: relative; z-index: 10;
@@ -310,64 +328,73 @@
     <p class="sub">Seleccioná un evento para ver el estado de ventas en tiempo real.</p>
   </div>
 
-  <div class="events-grid">
+  <section class="event-section">
+    <h2 class="section-title">Año Nuevo</h2>
+    <div class="events-grid featured">
+      <a class="event-card" href="loco-dice/index.html">
+        <img class="flyer" src="./images/LocoDice_flyer.jpg" alt="LOCO DICE">
+        <div class="overlay"></div>
+        <div class="info">
+          <span class="tag">Dashboard en vivo</span>
+          <div class="artist">LOCO DICE</div>
+          <div class="date">1 Ene · La Normandina</div>
+          <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
+        </div>
+      </a>
+    </div>
+  </section>
 
-    <a class="event-card" href="loco-dice/index.html">
-  <img class="flyer" src="./images/LocoDice_flyer.jpg" alt="LOCO DICE">
-  <div class="overlay"></div>
-  <div class="info">
-    <span class="tag">Dashboard en vivo</span>
-    <div class="artist">LOCO DICE</div>
-    <div class="date">1 Ene · La Normandina</div>
-    <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
-  </div>
-</a>
+  <section class="event-section">
+    <h2 class="section-title">Eventos exclusivos</h2>
+    <div class="events-grid">
+      <a class="event-card" href="nick-warren/index.html">
+        <img class="flyer" src="./images/NickWarren_flyer.jpg" alt="NICK WARREN">
+        <div class="overlay"></div>
+        <div class="info">
+          <span class="tag">Dashboard en vivo</span>
+          <div class="artist">NICK WARREN</div>
+          <div class="date">2 Ene · La Normandina</div>
+          <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
+        </div>
+      </a>
+      <a class="event-card" href="bart-skils/index.html">
+        <img class="flyer" src="./images/BART SKILS_FEVER.jpg" alt="BART SKILS">
+        <div class="overlay"></div>
+        <div class="info">
+          <span class="tag">Dashboard en vivo</span>
+          <div class="artist">BART SKILS</div>
+          <div class="date">30 Ene · La Normandina</div>
+          <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
+        </div>
+      </a>
+      <a class="event-card" href="danny-avila/index.html">
+        <img class="flyer" src="./images/DannyAvila_flyer.jpg" alt="DANNY AVILA">
+        <div class="overlay"></div>
+        <div class="info">
+          <span class="tag">Dashboard en vivo</span>
+          <div class="artist">DANNY AVILA</div>
+          <div class="date">23 Ene · La Normandina</div>
+          <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
+        </div>
+      </a>
+    </div>
+  </section>
 
-  <a class="event-card" href="sunset-nights/index.html">
-  <img class="flyer" src="./images/SunsetPack_flyer.jpg" alt="SUNSET NIGHTS">
-  <div class="overlay"></div>
-  <div class="info">
-    <span class="tag">Dashboard en vivo</span>
-    <div class="artist">SUNSET NIGHTS</div>
-    <div class="date">2–30 Ene · La Normandina</div>
-    <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
-  </div>
-</a>
-
-  <a class="event-card" href="nick-warren/index.html">
-  <img class="flyer" src="./images/NickWarren_flyer.jpg" alt="NICK WARREN">
-  <div class="overlay"></div>
-  <div class="info">
-    <span class="tag">Dashboard en vivo</span>
-    <div class="artist">NICK WARREN</div>
-    <div class="date">2 Ene · La Normandina</div>
-    <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
-  </div>
-</a>
-
-  <a class="event-card" href="danny-avila/index.html">
-  <img class="flyer" src="./images/DannyAvila_flyer.jpg" alt="DANNY AVILA">
-  <div class="overlay"></div>
-  <div class="info">
-    <span class="tag">Dashboard en vivo</span>
-    <div class="artist">DANNY AVILA</div>
-    <div class="date">23 Ene · La Normandina</div>
-    <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
-  </div>
-</a>
-
-  <a class="event-card" href="bart-skils/index.html">
-  <img class="flyer" src="./images/BART SKILS_FEVER.jpg" alt="BART SKILS">
-  <div class="overlay"></div>
-  <div class="info">
-    <span class="tag">Dashboard en vivo</span>
-    <div class="artist">BART SKILS</div>
-    <div class="date">30 Ene · La Normandina</div>
-    <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
-  </div>
-</a>
-
-  </div>
+  <section class="event-section">
+    <h2 class="section-title">Lanzamientos</h2>
+    <div class="events-grid">
+      <a class="event-card" href="sunset-nights/index.html">
+        <img class="flyer" src="./images/SunsetPack_flyer.jpg" alt="SUNSET NIGHTS">
+        <div class="overlay"></div>
+        <div class="info">
+          <span class="tag">Dashboard en vivo</span>
+          <div class="artist">SUNSET NIGHTS</div>
+          <div class="date">2–30 Ene · La Normandina</div>
+          <div class="cta">Ver dashboard <span class="cta-arrow">→</span></div>
+        </div>
+      </a>
+    </div>
+  </section>
 </main>
 
 <footer>
