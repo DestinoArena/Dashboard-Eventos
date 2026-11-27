@@ -301,7 +301,8 @@ function buildDashboard(tipos, diarias) {
 
   diarias.forEach(row => {
     const totalDia = parseFloat(row[1]) || 0;
-    if (!row[0] || totalDia === 0) return;
+    // Solo filas de fecha real: ignora filas de totales ("Tickets vendidos", "Total de asistentes", etc.)
+    if (!row[0] || totalDia === 0 || !/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(String(row[0]).trim())) return;
 
     const fecha = row[0];
     const baseDia = parsePesos(row[2]);
