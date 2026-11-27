@@ -204,29 +204,32 @@ const CONFIG = {
   SHEET_ID: '1pXC36kIwzLSahNeFZDEiH73pgdR8Xu-CB-ASPTOD1xs',
   REFRESH_SEG: 60,
   // Columnas de "Ventas Diarias" (índice dentro de la fila fetch-eada, A=0)
-  // A=Fecha(0) B=Total(1) C=Total Ingresos(2) D..F=VIP T1-T3(3..5) G..J=EB/General(6..9)
-  // K..M=VIP T1-T3 BP(10..12) N..Q=EB/General BP(13..16) R..T=Acceso S/Cargo(17..19) U=Service Charge(20)
+  // A=Fecha(0) B=Total(1) C=Total Ingresos(2) D..F=VIP T1-T3(3..5) G..J=EB/General(6..9) K=Black Friday(10)
+  // L..N=VIP T1-T3 BP(11..13) O..R=EB/General BP(14..17) S=Black Friday BP(18)
+  // T..V=Acceso S/Cargo(19..21) W=Service Charge(22)
   // Precios tomados de la fila 3 de "Ventas Diarias" del Sheet de Danny Avila.
   COL_TICKETS: [
-    { col: 6,  nombre: 'Early Bird General',             precio: 30000 },
-    { col: 7,  nombre: 'General Tanda 1',                precio: 35000 },
-    { col: 8,  nombre: 'General Tanda 2',                precio: 40000 },
-    { col: 9,  nombre: 'General Tanda 3',                precio: 45000 },
-    { col: 3,  nombre: 'VIP Standing - Tanda 1',         precio: 60000 },
-    { col: 4,  nombre: 'VIP Standing - Tanda 2',         precio: 70000 },
-    { col: 5,  nombre: 'VIP Standing - Tanda 3',         precio: 80000 },
-    { col: 13, nombre: 'Early Bird General - BP',        precio: 30000 },
-    { col: 14, nombre: 'General Tanda 1 - BP',           precio: 35000 },
-    { col: 15, nombre: 'General Tanda 2 - BP',           precio: 40000 },
-    { col: 16, nombre: 'General Tanda 3 - BP',           precio: 45000 },
-    { col: 10, nombre: 'VIP Standing - Tanda 1 - BP',    precio: 60000 },
-    { col: 11, nombre: 'VIP Standing - Tanda 2 - BP',    precio: 70000 },
-    { col: 12, nombre: 'VIP Standing - Tanda 3 - BP',    precio: 80000 },
-    { col: 17, nombre: 'Acceso S/Cargo General',         precio: 0 },
-    { col: 18, nombre: 'Acceso S/Cargo Backstage',       precio: 0 },
-    { col: 19, nombre: 'Acceso S/Cargo - VIP Front',     precio: 0 },
+    { col: 6,  nombre: 'Early Bird General',                  precio: 30000 },
+    { col: 7,  nombre: 'General Tanda 1',                     precio: 35000 },
+    { col: 8,  nombre: 'General Tanda 2',                     precio: 40000 },
+    { col: 9,  nombre: 'General Tanda 3',                     precio: 45000 },
+    { col: 10, nombre: 'Black Friday 1+1+1 (3tickets)',       precio: 60000 },
+    { col: 3,  nombre: 'VIP Standing - Tanda 1',              precio: 60000 },
+    { col: 4,  nombre: 'VIP Standing - Tanda 2',              precio: 70000 },
+    { col: 5,  nombre: 'VIP Standing - Tanda 3',              precio: 80000 },
+    { col: 14, nombre: 'Early Bird General - BP',             precio: 30000 },
+    { col: 15, nombre: 'General Tanda 1 - BP',                precio: 35000 },
+    { col: 16, nombre: 'General Tanda 2 - BP',                precio: 40000 },
+    { col: 17, nombre: 'General Tanda 3 - BP',                precio: 45000 },
+    { col: 18, nombre: 'Black Friday 1+1+1 (3tickets) - BP',  precio: 60000 },
+    { col: 11, nombre: 'VIP Standing - Tanda 1 - BP',         precio: 60000 },
+    { col: 12, nombre: 'VIP Standing - Tanda 2 - BP',         precio: 70000 },
+    { col: 13, nombre: 'VIP Standing - Tanda 3 - BP',         precio: 80000 },
+    { col: 19, nombre: 'Acceso S/Cargo General',              precio: 0 },
+    { col: 20, nombre: 'Acceso S/Cargo Backstage',            precio: 0 },
+    { col: 21, nombre: 'Acceso S/Cargo - VIP Front',          precio: 0 },
   ],
-  COL_SERVICIO: 20, // columna U
+  COL_SERVICIO: 22, // columna W
 };
 
 const SHEET_ID   = CONFIG.SHEET_ID;
@@ -544,7 +547,7 @@ async function loadData() {
   try {
     const [tipos, diarias] = await Promise.all([
       fetchSheet("Dataset Tipos De Tickets!B2:D30"),
-      fetchSheet("Ventas Diarias!A4:U117"),
+      fetchSheet("Ventas Diarias!A4:W117"),
     ]);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
